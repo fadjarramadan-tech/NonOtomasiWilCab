@@ -471,7 +471,9 @@
             const entitas = (itemTerpilih.entitas || "W01").trim().toUpperCase();
             
             currentItemPrice = cleanNumber(itemTerpilih.price);
-            currentItemAlokasiENP = cleanNumber(itemTerpilih.alokasi) || (maxQty * currentItemPrice);
+            
+            // PERBAIKAN: Gunakan nilai ENP murni dari item database, jika kosong baru fallback ke perkalian Qty * Harga
+            currentItemAlokasiENP = cleanNumber(itemTerpilih.enp) || (maxQty * currentItemPrice);
 
             document.getElementById('modalHargaSatuan').textContent = formatRupiah(currentItemPrice);
             openBreakdownModal(nama, maxQty, entitas);
