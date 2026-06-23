@@ -209,7 +209,7 @@
     </div>
 
     <script>
-        const API_URL = "https://script.google.com/macros/s/AKfycbwcQsSlVsWxTbNcol6PzIE0U0LXhe9lO-ONyGerUJAZIiEP7rBH6ApJN3J2OnPUAjQz/exec";
+        const API_URL = "https://script.google.com/macros/s/AKfycbycESxgefbOv_zPxKRvm2poilOIdSzA7uqqwc2l4ORZJ72YVTQG5Vv4ZYGvsH0EpAcL/exec";
         
         let globalDatabaseBarang = [];
         let globalDataOutlet = [];
@@ -337,6 +337,51 @@
                 document.getElementById('sumTotalAlokasi').textContent = formatRupiah(0);
                 return;
             }
+
+            filteredLog.forEach((log) => {
+                const masterItem = globalDatabaseBarang.find(item => 
+                    (item.nama_barang || '').trim().toUpperCase() === log.namaBarang.trim().toUpperCase() &&
+                    (item.entitas || '').trim().toUpperCase() === log.wilayahParent.trim().toUpperCase()
+                );
+                
+                // PERBAIKAN: Mengakomodir pembacaan properti hargaFinal baik huruf kecil maupun kapital dari server
+                const rawHargaLog = log.hargaFinal || log.harga_final || log.HargaFinal || log.HARGAFINAL;
+                const hargaSatuanFinal = rawHargaLog ? cleanNumber(rawHargaLog) : (masterItem ? cleanNumber(masterItem.price) : 0);
+                
+                const nilaiRupiahLog = (parseInt(log.quantity) || 0) * hargaSatuanFinal;
+                totalRealisasiAlokasi += nilaiRupiahLog;
+
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-amber-50/50 transition-colors border-b border-gray-100";
+                
+                let bHtml = "";
+                for(let m = 1; m <= 12; m++) {
+                    bHtml += `<td class="p-1 font-mono text-gray-600 border-r border-gray-100">${log.detailBulan['bulan_'+m] || 0}</td>`;
+                }
+
+                tr.innerHTML = `
+                    <td class="px-2 py-2 text-left font-mono font-bold text-teal-800 border-r border-gray-100">${log.wilayahParent}</td>
+                    <td class="px-2 py-2 text-left font-medium text-gray-900 border-r border-gray-100">${log.namaBarang}</td>
+                    <td class="px-2 py-2 text-left text-gray-600 border-r border-gray-100">${log.subEntity}</td>
+                    <td class="px-2 py-2 font-bold text-teal-700 bg-teal-50/30 border-r border-gray-200">${log.quantity}</td>
+                    ${bHtml}
+                    <td class="px-2 py-2 text-right font-mono text-gray-600 border-r border-gray-100">${formatRupiah(hargaSatuanFinal)}</td>
+                    <td class="px-2 py-2 font-semibold text-teal-900 bg-amber-50/60 border-r border-amber-200 text-right font-mono">${formatRupiah(nilaiRupiahLog)}</td>
+                    <td class="px-2 py-2 flex gap-1 justify-center">
+                        <button onclick="triggerEditFromLog('${log.namaBarang}', '${log.wilayahParent}')" class="px-2 py-1 bg-amber-600 hover:bg-amber-700 text-white rounded text-[10px] font-semibold transition shadow-sm">
+                            ✏️ Edit
+                        </button>
+                        <button onclick="triggerDeleteRowLog('${log.namaBarang}', '${log.wilayahParent}', '${log.subEntity}')" class="px-2 py-1 bg-rose-600 hover:bg-rose-700 text-white rounded text-[10px] font-semibold transition shadow-sm">
+                            🗑️ Hapus
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            document.getElementById('sumTotalENP').textContent = formatRupiah(totalMaksimumPaguENP);
+            document.getElementById('sumTotalAlokasi').textContent = formatRupiah(totalRealisasiAlokasi);
+        }
 
             filteredLog.forEach((log) => {
                 const masterItem = globalDatabaseBarang.find(item => 
