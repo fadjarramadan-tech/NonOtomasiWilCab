@@ -19,13 +19,13 @@
 
     <div class="max-w-7xl mx-auto px-4 py-8">
         <header class="mb-6 text-center">
-            <h1 class="text-3xl font-bold text-teal-950">Sistem Breakdown Perabotan</h1>
+            <h1 class="text-3xl font-bold text-teal-950">Formulir Breakdown Perabotan Non Otomasi - CAPEX 2026</h1>
             <p class="text-teal-700 mt-2">Alokasi RBB 2026 — Gunakan filter dan klik baris data untuk mengisi breakdown unit</p>
         </header>
 
         <div id="loading" class="fixed inset-0 bg-gray-950/50 flex flex-col items-center justify-center z-50">
             <div class="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12 mb-4"></div>
-            <p class="text-white font-semibold">Mengambil data dari Google Sheets...</p>
+            <p class="text-white font-semibold">Sinkronisasi Database...</p>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
@@ -34,7 +34,7 @@
                 <h2 class="text-lg font-bold text-teal-900 mb-3 pb-2 border-b border-teal-100">Panduan Pengisian</h2>
                 <ol class="list-decimal list-inside space-y-2.5 text-sm text-gray-600">
                     <li>Gunakan **Filter** untuk mencari Wilayah atau Barang spesifik Anda.</li>
-                    <li>Lihat box **Summary** untuk memonitor total akumulasi plafon saat ini.</li>
+                    <li>Lihat box **Total Rencana Realisasi** untuk memonitor total rencana realisasi saat ini.</li>
                     <li><span class="text-teal-700 font-semibold">Klik pada baris tabel</span> untuk memunculkan formulir input pop-up jendela.</li>
                 </ol>
                 <div class="mt-5 p-3 bg-teal-50 rounded-lg border border-teal-200 text-xs text-teal-950">
@@ -77,7 +77,7 @@
     </div>
 
     <div id="tabContentAcuan" class="bg-white p-5 rounded-xl shadow-md border border-teal-100 flex flex-col">
-        <h2 class="text-base font-bold text-teal-900 mb-3">Data Acuan Plafon Perabotan (Database Pusat)</h2>
+        <h2 class="text-base font-bold text-teal-900 mb-3">Data Acuan Plafon Perabotan (Cf. Persetujuan Dir. Sektor)</h2>
         <div class="overflow-x-auto max-h-[500px]">
             <table class="min-w-full divide-y divide-gray-200 text-sm">
                 <thead class="bg-teal-50 sticky top-0 z-10">
@@ -87,7 +87,7 @@
                         <th class="px-3 py-2.5 text-right font-semibold text-teal-900">Harga Satuan</th>
                         <th class="px-3 py-2.5 text-right font-semibold text-teal-900">Total ENP</th>
                         <th class="px-3 py-2.5 text-right font-semibold text-teal-900">Usulan Alokasi</th>
-                        <th class="px-3 py-2.5 text-right font-semibold text-teal-900 bg-teal-100/50 text-teal-950">Alokasi Menjadi</th>
+                        <th class="px-3 py-2.5 text-right font-semibold text-teal-900 bg-teal-100/50 text-teal-950">Usul Alokasi Menjadi</th>
                         <th class="px-3 py-2.5 text-center font-semibold text-teal-900">Entitas</th>
                     </tr>
                 </thead>
@@ -109,8 +109,8 @@
                 <thead class="bg-amber-50 sticky top-0 z-10 shadow-sm">
                     <tr>
                         <th colspan="4" class="bg-amber-50/80 p-1 border-b border-r border-amber-200 text-gray-500 font-medium text-[10px] uppercase tracking-wider">Informasi Awal</th>
-                        <th colspan="12" class="bg-teal-600 p-1 border-b border-r border-teal-700 text-white font-bold text-[11px] uppercase tracking-wider">Sebaran Kuantitas Bulanan</th>
-                        <th colspan="2" class="bg-amber-100 p-1 border-b text-gray-600 font-bold text-[11px] uppercase tracking-wider">Kalkulasi Finansial</th>
+                        <th colspan="12" class="bg-teal-600 p-1 border-b border-r border-teal-700 text-white font-bold text-[11px] uppercase tracking-wider">Rencana Realisasi</th>
+                        <th colspan="3" class="bg-amber-100 p-1 border-b text-gray-600 font-bold text-[11px] uppercase tracking-wider">Kalkulasi Finansial</th>
                     </tr>
                     <tr>
                         <th class="px-2 py-2 text-left font-semibold text-amber-950 w-20 border-r border-amber-200/60">Wilayah</th>
@@ -129,13 +129,14 @@
                         <th class="p-1 font-medium text-teal-950 w-8 bg-teal-50 border-r border-teal-100">Okt</th>
                         <th class="p-1 font-medium text-teal-950 w-8 bg-teal-50 border-r border-teal-100">Nov</th>
                         <th class="p-1 font-medium text-teal-950 w-8 bg-teal-50 border-r border-teal-200">Des</th>
-                        <th class="px-2 py-2 font-bold text-teal-950 bg-amber-50 border-r border-amber-200 text-right w-28">Rencana Realisasi</th>
+                        <th class="px-2 py-2 font-semibold text-teal-950 bg-amber-50 border-r border-amber-200 text-right w-24">Harga Final</th>
+                        <th class="px-2 py-2 font-bold text-teal-950 bg-amber-100/50 border-r border-amber-200 text-right w-28">Rencana Realisasi</th>
                         <th class="px-2 py-2 font-semibold text-amber-950 w-24">Aksi</th>
                     </tr>
                 </thead>
                 <tbody id="monitoringTableBody" class="divide-y divide-gray-100">
                     <tr>
-                        <td colspan="18" class="py-8 text-gray-400 italic">Memuat basis log data...</td>
+                        <td colspan="19" class="py-8 text-gray-400 italic">Memuat basis log data...</td>
                     </tr>
                 </tbody>
             </table>
@@ -145,7 +146,7 @@
 </div>
 
     <div id="breakdownModal" class="fixed inset-0 bg-gray-900/60 z-40 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-xl shadow-2xl max-w-6xl w-full overflow-hidden border border-teal-100">
+        <div class="bg-white rounded-xl shadow-2xl max-w-7xl w-full overflow-hidden border border-teal-100">
             <div class="bg-teal-700 p-4 text-white flex justify-between items-center">
                 <div>
                     <h3 class="font-bold text-lg">Input Breakdown Perabotan</h3>
@@ -161,7 +162,7 @@
                         <p id="modalNamaBarang" class="font-semibold text-gray-800">-</p>
                     </div>
                     <div>
-                        <p class="text-gray-500">Harga Satuan:</p>
+                        <p class="text-gray-500">Harga Satuan Acuan:</p>
                         <p id="modalHargaSatuan" class="font-semibold text-teal-800">Rp0</p>
                     </div>
                     <div>
@@ -180,10 +181,10 @@
 
                 <form id="breakdownForm" onsubmit="handleSubmit(event)">
     <div class="overflow-x-auto overflow-y-auto max-h-[380px] border border-gray-200 rounded-lg mb-4 bg-white shadow-inner">
-        <table class="w-full text-center text-xs table-fixed min-w-[950px]">
+        <table class="w-full text-center text-xs table-fixed min-w-[1100px]">
             <thead class="bg-gray-50 text-gray-600 border-b sticky top-0 z-10 shadow-sm">
                 <tr id="modalThContainer">
-                    <th class="p-2 text-left w-48 bg-gray-50">Sub Entity (Cabang/Sentra)</th>
+                    <th class="p-2 text-left w-44 bg-gray-50">Sub Entity (Cabang/Sentra)</th>
                     <th class="p-2 w-16 bg-gray-50">Total Qty</th>
                     <th class="p-2 w-12 bg-gray-50">Aksi</th>
                 </tr>
@@ -248,7 +249,7 @@
                 const data = JSON.parse(textData); 
                 
                 if (data.error) {
-                    alert("Error dari Google Sheets: " + data.error);
+                    alert("Error dari Database: " + data.error);
                     return;
                 }
                 
@@ -274,7 +275,7 @@
             filterEntitySelect.innerHTML = '<option value="ALL">-- Semua Wilayah --</option>';
             
             for (let i = 1; i <= 18; i++) {
-                if (i === 13) continue; // 1. Hilangkan W13 dari Inisialisasi Dropdown Wilayah Utama
+                if (i === 13) continue; 
                 let code = "W" + String(i).padStart(2, '0');
                 let opt = document.createElement('option');
                 opt.value = code;
@@ -307,7 +308,7 @@
 
             globalDatabaseBarang.forEach(item => {
                 const entitas = (item.entitas || '-').trim().toUpperCase();
-                if (entitas === "W13") return; // 1. Proteksi hilangkan data W13 dari perhitungan
+                if (entitas === "W13") return; 
                 const nama = item.nama_barang || '';
                 
                 const matchEntity = (selectedEntity === "ALL" || entitas === selectedEntity.toUpperCase());
@@ -323,7 +324,7 @@
 
             const filteredLog = globalLogBreakdown.filter(log => {
                 const entitasLog = log.wilayahParent.trim().toUpperCase();
-                if (entitasLog === "W13") return false; // 1. Jangan masukkan log W13 ke TAB 2
+                if (entitasLog === "W13") return false; 
                 
                 const matchEntity = (selectedEntity === "ALL" || entitasLog === selectedEntity.toUpperCase());
                 const matchBarang = (selectedBarang === "ALL" || log.namaBarang.trim().toUpperCase() === selectedBarang.toUpperCase());
@@ -331,7 +332,7 @@
             });
 
             if (filteredLog.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="18" class="py-6 text-gray-400 italic">Tidak ditemukan rincian data log untuk filter dimaksud.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="19" class="py-6 text-gray-400 italic">Tidak ditemukan rincian data log untuk filter dimaksud.</td></tr>`;
                 document.getElementById('sumTotalENP').textContent = formatRupiah(totalMaksimumPaguENP);
                 document.getElementById('sumTotalAlokasi').textContent = formatRupiah(0);
                 return;
@@ -342,10 +343,9 @@
                     (item.nama_barang || '').trim().toUpperCase() === log.namaBarang.trim().toUpperCase() &&
                     (item.entitas || '').trim().toUpperCase() === log.wilayahParent.trim().toUpperCase()
                 );
-                const hargaSatuan = masterItem ? cleanNumber(masterItem.price) : 0;
                 
-                // 2. Kalkulasi Rencana Realisasi (Qty total inputan breakdown dikalikan harga satuan barang)
-                const nilaiRupiahLog = (parseInt(log.quantity) || 0) * hargaSatuan;
+                const hargaSatuanFinal = log.hargaFinal ? cleanNumber(log.hargaFinal) : (masterItem ? cleanNumber(masterItem.price) : 0);
+                const nilaiRupiahLog = (parseInt(log.quantity) || 0) * hargaSatuanFinal;
                 totalRealisasiAlokasi += nilaiRupiahLog;
 
                 const tr = document.createElement('tr');
@@ -362,6 +362,7 @@
                     <td class="px-2 py-2 text-left text-gray-600 border-r border-gray-100">${log.subEntity}</td>
                     <td class="px-2 py-2 font-bold text-teal-700 bg-teal-50/30 border-r border-gray-200">${log.quantity}</td>
                     ${bHtml}
+                    <td class="px-2 py-2 text-right font-mono text-gray-600 border-r border-gray-100">${formatRupiah(hargaSatuanFinal)}</td>
                     <td class="px-2 py-2 font-semibold text-teal-900 bg-amber-50/60 border-r border-amber-200 text-right font-mono">${formatRupiah(nilaiRupiahLog)}</td>
                     <td class="px-2 py-2 flex gap-1 justify-center">
                         <button onclick="triggerEditFromLog('${log.namaBarang}', '${log.wilayahParent}')" class="px-2 py-1 bg-amber-600 hover:bg-amber-700 text-white rounded text-[10px] font-semibold transition shadow-sm">
@@ -405,6 +406,15 @@
             }
         }
 
+        function formatInputRupiah(input) {
+            let value = input.value.replace(/[^0-9]/g, "");
+            if (value === "") {
+                input.value = "";
+                return;
+            }
+            input.value = new Intl.NumberFormat("id-ID").format(parseInt(value));
+        }
+
         function addNewBreakdownRowWithData(logData) {
             const container = document.getElementById('breakdownRowsContainer');
             const rowId = 'row_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
@@ -428,8 +438,12 @@
             tr.id = rowId;
             tr.className = "breakdown-item-row border-b border-gray-100 hover:bg-gray-50/80";
             
+            const hargaRowLoad = logData.hargaFinal ? cleanNumber(logData.hargaFinal) : currentItemPrice;
+            const formattedHarga = new Intl.NumberFormat("id-ID").format(hargaRowLoad);
+
             let rowContent = `
                 <td class="p-2"><select class="sub-entity-select w-full border border-gray-300 rounded p-1 text-[11px] outline-none bg-white">${optionsHtml}</select></td>
+                <td class="p-2"><input type="text" value="${formattedHarga}" oninput="formatInputRupiah(this); calculateLiveENP()" class="final-price-input w-24 border border-gray-300 rounded p-1 text-[11px] font-mono text-right focus:ring-1 focus:ring-teal-500 outline-none" /></td>
                 <td class="p-2"><input type="number" min="0" value="${logData.quantity}" class="row-qty w-14 border border-gray-200 bg-gray-50 rounded p-1 text-[11px] text-center outline-none font-semibold text-gray-700" readonly /></td>
             `;
             
@@ -439,7 +453,7 @@
             }
             
             rowContent += `
-                <td class="p-2 text-right font-semibold text-gray-600 text-[11px] row-total-enp-text">${formatRupiah(logData.quantity * currentItemPrice)}</td>
+                <td class="p-2 text-right font-semibold text-gray-600 text-[11px] row-total-enp-text">${formatRupiah(logData.quantity * hargaRowLoad)}</td>
                 <td class="p-2 text-center"><button type="button" onclick="removeBreakdownRow('${rowId}')" class="text-red-500 hover:text-red-700 font-bold text-xs">✕</button></td>
             `;
             
@@ -476,7 +490,11 @@
             const thContainer = document.getElementById('modalThContainer');
             const bulanArr = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Ags','Sep','Okt','Nov','Des'];
             
-            let headerHtml = `<th class="p-3 text-left w-48 bg-gray-50">Sub Entity (Cabang/Sentra)</th><th class="p-3 w-16 bg-gray-50">Total Qty</th>`;
+            let headerHtml = `
+                <th class="p-3 text-left w-44 bg-gray-50">Sub Entity (Cabang)</th>
+                <th class="p-3 w-28 bg-gray-50 text-right">Harga Final (Rp)</th>
+                <th class="p-3 w-16 bg-gray-50">Total Qty</th>`;
+            
             bulanArr.forEach(b => {
                 headerHtml += `<th class="p-2 w-12 font-medium bg-gray-50">${b}</th>`;
             });
@@ -517,8 +535,11 @@
             tr.id = rowId;
             tr.className = "breakdown-item-row border-b border-gray-100 hover:bg-gray-50/80 transition-colors";
             
+            const formattedDefaultPrice = new Intl.NumberFormat("id-ID").format(currentItemPrice);
+
             let rowContent = `
                 <td class="py-1.5 px-2"><select class="sub-entity-select w-full border border-gray-300 rounded p-1 text-[11px] focus:ring-1 focus:ring-teal-500 outline-none bg-white">${optionsHtml}</select></td>
+                <td class="py-1.5 px-2"><input type="text" value="${formattedDefaultPrice}" oninput="formatInputRupiah(this); calculateLiveENP()" class="final-price-input w-24 border border-gray-300 rounded p-1 text-[11px] font-mono text-right focus:ring-1 focus:ring-teal-500 outline-none" /></td>
                 <td class="py-1.5 px-1"><input type="number" min="0" value="0" class="row-qty w-14 border border-gray-200 bg-gray-50 rounded p-1 text-[11px] text-center outline-none font-semibold text-gray-700" readonly /></td>
             `;
             
@@ -556,13 +577,16 @@
             for (let row of rows) {
                 let qtyBarisDariBulan = 0;
                 
+                let rawPrice = row.querySelector('.final-price-input').value.replace(/[^0-9]/g, "");
+                const hargaFinalBaris = parseInt(rawPrice) || 0;
+                
                 for (let m = 1; m <= 12; m++) {
                     const valBulan = parseInt(row.querySelector(`.m-${m}`).value) || 0;
                     qtyBarisDariBulan += valBulan;
                 }
 
                 row.querySelector('.row-qty').value = qtyBarisDariBulan;
-                const enpBaris = qtyBarisDariBulan * currentItemPrice;
+                const enpBaris = qtyBarisDariBulan * hargaFinalBaris;
                 akumulasiTotalENPModal += enpBaris;
                 row.querySelector('.row-total-enp-text').textContent = formatRupiah(enpBaris);
             }
@@ -590,6 +614,8 @@
 
             for (let row of rows) {
                 const subEntity = row.querySelector('.sub-entity-select').value;
+                let rawPrice = row.querySelector('.final-price-input').value.replace(/[^0-9]/g, "");
+                const hargaFinalBaris = parseInt(rawPrice) || 0;
                 
                 if (!subEntity) {
                     alert("Harap pilih Sub Entity / Cabang untuk semua baris!");
@@ -605,23 +631,19 @@
                 }
 
                 totalQtyInput += qtyBaris;
-                totalENPInput += (qtyBaris * currentItemPrice);
+                totalENPInput += (qtyBaris * hargaFinalBaris);
 
                 listBreakdownPayload.push({
                     subEntity: subEntity,
                     quantity: qtyBaris, 
+                    hargaFinal: hargaFinalBaris, 
                     detailBulan: rincianBulan 
                 });
             }
 
-            const maxQty = parseInt(document.getElementById('modalSisaQty').textContent) || 0;
-            if (totalQtyInput > maxQty) {
-                alert(`🚨 GAGAL SUBMIT!\nTotal kuantiti bulanan yang diajukan (${totalQtyInput} Unit) melebihi kuota alokasi wilayah (${maxQty} Unit)!`);
-                return;
-            }
-
+            // Validasi Utama: Pembatasan ketat diubah berbasis batasan Anggaran ENP (bukan Qty)
             if (totalENPInput > currentItemAlokasiENP) {
-                alert(`❌ GAGAL AJUKAN BREAKDOWN (OVERBUDGET)!\n\nTotal Rencana Realisasi saat ini sebesar ${formatRupiah(totalENPInput)} melebihi batas anggaran plafon wilayah sebesar ${formatRupiah(currentItemAlokasiENP)}.\n\nSilakan sesuaikan kembali sebaran kuantiti bulanan Anda.`);
+                alert(`❌ GAGAL AJUKAN BREAKDOWN (OVERBUDGET)!\n\nTotal Rencana Realisasi sebesar ${formatRupiah(totalENPInput)} melebihi batas anggaran plafon wilayah sebesar ${formatRupiah(currentItemAlokasiENP)}.\n\nSilakan kurangi sebaran kuantiti bulanan atau sesuaikan harga final Anda.`);
                 return; 
             }
 
@@ -698,7 +720,7 @@
 
             globalDatabaseBarang.forEach((item, index) => {
                 const entitas = (item.entitas || '-').trim().toUpperCase();
-                if (entitas === "W13") return; // 1. Hilangkan W13 dari render tabel TAB 1
+                if (entitas === "W13") return; 
                 
                 const nama = item.nama_barang || '';
                 const qty = cleanNumber(item.quantity);
@@ -712,14 +734,16 @@
                 const matchBarang = (selectedBarang === "ALL" || nama.trim().toUpperCase() === selectedBarang.toUpperCase());
 
                 if (matchEntity && matchBarang) {
-                    // Hitung total quantity yang sudah di-breakdown khusus untuk barang dan wilayah ini
-                    const totalQtyTelahBreakdown = globalLogBreakdown
-                        .filter(log => log.namaBarang.trim().toUpperCase() === nama.trim().toUpperCase() && 
-                                       log.wilayahParent.trim().toUpperCase() === entitas)
-                        .reduce((sum, log) => sum + (parseInt(log.quantity) || 0), 0);
+                    const matchingLogs = globalLogBreakdown.filter(log => 
+                        log.namaBarang.trim().toUpperCase() === nama.trim().toUpperCase() && 
+                        log.wilayahParent.trim().toUpperCase() === entitas
+                    );
 
-                    // 3. Kolom "Alokasi Menjadi" dihitung dari total qty breakdown riil * harga satuan
-                    const nominalTelahBreakdown = totalQtyTelahBreakdown * harga;
+                    let nominalTelahBreakdown = 0;
+                    matchingLogs.forEach(log => {
+                        const hargaLog = log.hargaFinal ? cleanNumber(log.hargaFinal) : harga;
+                        nominalTelahBreakdown += (parseInt(log.quantity) || 0) * hargaLog;
+                    });
 
                     akumulasiENP += enp;
                     akumulasiAlokasiMenjadi += nominalTelahBreakdown;
@@ -743,7 +767,6 @@
             });
 
             document.getElementById('sumTotalENP').textContent = formatRupiah(akumulasiENP);
-            // Box total kanan atas disesuaikan dengan total akumulasi rencana realisasi riil
             document.getElementById('sumTotalAlokasi').textContent = formatRupiah(akumulasiAlokasiMenjadi);
         }
 
@@ -752,7 +775,7 @@
         }
 
         async function triggerDeleteRowLog(namaBarang, wilayahParent, subEntity) {
-            if (!confirm(`Apakah Anda yakin ingin menghapus data breakdown untuk:\nUnit: ${subEntity}\nBarang: ${namaBarang}?\n\nData pada Google Sheet akan dihapus.`)) {
+            if (!confirm(`Apakah Anda yakin ingin menghapus data breakdown untuk:\nUnit: ${subEntity}\nBarang: ${namaBarang}?\n\nData pada Database akan dihapus.`)) {
                 return;
             }
 
