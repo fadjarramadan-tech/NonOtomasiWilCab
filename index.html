@@ -86,7 +86,8 @@
                         <th class="px-3 py-2.5 text-center font-semibold text-teal-900">Plafon Qty</th>
                         <th class="px-3 py-2.5 text-right font-semibold text-teal-900">Harga Satuan</th>
                         <th class="px-3 py-2.5 text-right font-semibold text-teal-900">Total ENP</th>
-                        <th class="px-3 py-2.5 text-right font-semibold text-teal-900">Alokasi</th>
+                        <th class="px-3 py-2.5 text-right font-semibold text-teal-900">Usulan Alokasi</th>
+                        <th class="px-3 py-2.5 text-right font-semibold text-teal-900 bg-teal-100/50 text-teal-950">Alokasi Menjadi</th>
                         <th class="px-3 py-2.5 text-center font-semibold text-teal-900">Entitas</th>
                     </tr>
                 </thead>
@@ -108,32 +109,33 @@
                 <thead class="bg-amber-50 sticky top-0 z-10 shadow-sm">
                     <tr>
                         <th colspan="4" class="bg-amber-50/80 p-1 border-b border-r border-amber-200 text-gray-500 font-medium text-[10px] uppercase tracking-wider">Informasi Awal</th>
-                        <th colspan="12" class="bg-teal-600 p-1 border-b border-r border-teal-700 text-white font-bold text-[11px] uppercase tracking-wider">Rencana Realisasi</th>
-                        <th class="bg-amber-50/80 p-1 border-b text-gray-500 font-medium text-[10px] uppercase tracking-wider">Manajemen</th>
+                        <th colspan="12" class="bg-teal-600 p-1 border-b border-r border-teal-700 text-white font-bold text-[11px] uppercase tracking-wider">Sebaran Kuantitas Bulanan</th>
+                        <th colspan="2" class="bg-amber-100 p-1 border-b text-gray-600 font-bold text-[11px] uppercase tracking-wider">Kalkulasi Finansial</th>
                     </tr>
                     <tr>
-                        <th class="px-2 py-2 text-left font-semibold text-amber-950 w-24 border-r border-amber-200/60">Wilayah</th>
-                        <th class="px-2 py-2 text-left font-semibold text-amber-950 w-44 border-r border-amber-200/60">Nama Barang</th>
-                        <th class="px-2 py-2 text-left font-semibold text-amber-950 w-40 border-r border-amber-200/60">Sub Entity</th>
-                        <th class="px-2 py-2 font-bold text-amber-950 w-14 border-r border-amber-200">Total</th>
-                        <th class="p-1 font-medium text-teal-950 w-9 bg-teal-50 border-r border-teal-100">Jan</th>
-                        <th class="p-1 font-medium text-teal-950 w-9 bg-teal-50 border-r border-teal-100">Feb</th>
-                        <th class="p-1 font-medium text-teal-950 w-9 bg-teal-50 border-r border-teal-100">Mar</th>
-                        <th class="p-1 font-medium text-teal-950 w-9 bg-teal-50 border-r border-teal-100">Apr</th>
-                        <th class="p-1 font-medium text-teal-950 w-9 bg-teal-50 border-r border-teal-100">Mei</th>
-                        <th class="p-1 font-medium text-teal-950 w-9 bg-teal-50 border-r border-teal-100">Jun</th>
-                        <th class="p-1 font-medium text-teal-950 w-9 bg-teal-50 border-r border-teal-100">Jul</th>
-                        <th class="p-1 font-medium text-teal-950 w-9 bg-teal-50 border-r border-teal-100">Ags</th>
-                        <th class="p-1 font-medium text-teal-950 w-9 bg-teal-50 border-r border-teal-100">Sep</th>
-                        <th class="p-1 font-medium text-teal-950 w-9 bg-teal-50 border-r border-teal-100">Okt</th>
-                        <th class="p-1 font-medium text-teal-950 w-9 bg-teal-50 border-r border-teal-100">Nov</th>
-                        <th class="p-1 font-medium text-teal-950 w-9 bg-teal-50 border-r border-teal-200">Des</th>
-                        <th class="px-2 py-2 font-semibold text-amber-950 w-20">Aksi</th>
+                        <th class="px-2 py-2 text-left font-semibold text-amber-950 w-20 border-r border-amber-200/60">Wilayah</th>
+                        <th class="px-2 py-2 text-left font-semibold text-amber-950 w-40 border-r border-amber-200/60">Nama Barang</th>
+                        <th class="px-2 py-2 text-left font-semibold text-amber-950 w-36 border-r border-amber-200/60">Sub Entity</th>
+                        <th class="px-2 py-2 font-bold text-amber-950 w-12 border-r border-amber-200">Total Qty</th>
+                        <th class="p-1 font-medium text-teal-950 w-8 bg-teal-50 border-r border-teal-100">Jan</th>
+                        <th class="p-1 font-medium text-teal-950 w-8 bg-teal-50 border-r border-teal-100">Feb</th>
+                        <th class="p-1 font-medium text-teal-950 w-8 bg-teal-50 border-r border-teal-100">Mar</th>
+                        <th class="p-1 font-medium text-teal-950 w-8 bg-teal-50 border-r border-teal-100">Apr</th>
+                        <th class="p-1 font-medium text-teal-950 w-8 bg-teal-50 border-r border-teal-100">Mei</th>
+                        <th class="p-1 font-medium text-teal-950 w-8 bg-teal-50 border-r border-teal-100">Jun</th>
+                        <th class="p-1 font-medium text-teal-950 w-8 bg-teal-50 border-r border-teal-100">Jul</th>
+                        <th class="p-1 font-medium text-teal-950 w-8 bg-teal-50 border-r border-teal-100">Ags</th>
+                        <th class="p-1 font-medium text-teal-950 w-8 bg-teal-50 border-r border-teal-100">Sep</th>
+                        <th class="p-1 font-medium text-teal-950 w-8 bg-teal-50 border-r border-teal-100">Okt</th>
+                        <th class="p-1 font-medium text-teal-950 w-8 bg-teal-50 border-r border-teal-100">Nov</th>
+                        <th class="p-1 font-medium text-teal-950 w-8 bg-teal-50 border-r border-teal-200">Des</th>
+                        <th class="px-2 py-2 font-bold text-teal-950 bg-amber-50 border-r border-amber-200 text-right w-28">Rencana Realisasi</th>
+                        <th class="px-2 py-2 font-semibold text-amber-950 w-24">Aksi</th>
                     </tr>
                 </thead>
                 <tbody id="monitoringTableBody" class="divide-y divide-gray-100">
                     <tr>
-                        <td colspan="17" class="py-8 text-gray-400 italic">Memuat basis log data...</td>
+                        <td colspan="18" class="py-8 text-gray-400 italic">Memuat basis log data...</td>
                     </tr>
                 </tbody>
             </table>
@@ -210,14 +212,13 @@
         
         let globalDatabaseBarang = [];
         let globalDataOutlet = [];
-        let globalLogBreakdown = []; // Penampung Log Data Breakdown dari Server
+        let globalLogBreakdown = []; 
         let currentSelectedWilayah = ""; 
         
         let currentItemPrice = 0;
         let currentItemAlokasiENP = 0;
         let currentActiveTab = "acuan";
 
-        // FUNGSI MANAJEMEN TAB VIEW
         function switchTab(tabName) {
             currentActiveTab = tabName;
             const tabAcuan = document.getElementById('tabContentAcuan');
@@ -230,17 +231,16 @@
                 tabMonitoring.classList.add('hidden');
                 btnAcuan.className = "px-5 py-2.5 font-bold text-sm rounded-t-xl transition-all bg-white text-teal-950 border-t border-x border-teal-200 -mb-[1px]";
                 btnMonitoring.className = "px-5 py-2.5 font-semibold text-sm rounded-t-xl transition-all bg-teal-50/50 text-teal-700 hover:bg-teal-100/50";
-                applyFilters(); // Hitung ulang summary data plafon
+                applyFilters(); 
             } else {
                 tabAcuan.classList.add('hidden');
                 tabMonitoring.classList.remove('hidden');
                 btnAcuan.className = "px-5 py-2.5 font-semibold text-sm rounded-t-xl transition-all bg-teal-50/50 text-teal-700 hover:bg-teal-100/50";
                 btnMonitoring.className = "px-5 py-2.5 font-bold text-sm rounded-t-xl transition-all bg-white text-teal-950 border-t border-x border-teal-200 -mb-[1px]";
-                renderMonitoringLog(); // Hitung ulang summary realisasi riil
+                renderMonitoringLog(); 
             }
         }
 
-        // AMBIL DATA MUTAKHIR DARI GOOGLE SHEET
         async function fetchAllDataFromServer() {
             try {
                 const response = await fetch(API_URL);
@@ -269,12 +269,12 @@
             }
         }
 
-        // INITIAL LOAD
         window.addEventListener('DOMContentLoaded', async () => {
             const filterEntitySelect = document.getElementById('filterEntity');
             filterEntitySelect.innerHTML = '<option value="ALL">-- Semua Wilayah --</option>';
             
             for (let i = 1; i <= 18; i++) {
+                if (i === 13) continue; // 1. Hilangkan W13 dari Inisialisasi Dropdown Wilayah Utama
                 let code = "W" + String(i).padStart(2, '0');
                 let opt = document.createElement('option');
                 opt.value = code;
@@ -295,7 +295,6 @@
             alert("Data log berhasil diperbarui!");
         }
 
-        // RE-RENDER & RE-CALCULATE TAB 2 (MONITORING REALISASI)
         function renderMonitoringLog() {
             const tbody = document.getElementById('monitoringTableBody');
             tbody.innerHTML = "";
@@ -303,13 +302,12 @@
             const selectedEntity = document.getElementById('filterEntity').value;
             const selectedBarang = document.getElementById('filterBarang').value;
 
-            // 4. Perbaikan Perhitungan Maksimum Pagu (ENP) Master berdasarkan filter Wilayah di TAB 2
             let totalMaksimumPaguENP = 0;
             let totalRealisasiAlokasi = 0;
 
-            // Hitung total maksimum pagu ENP dari database master acuan terlebih dahulu sesuai filter
             globalDatabaseBarang.forEach(item => {
                 const entitas = (item.entitas || '-').trim().toUpperCase();
+                if (entitas === "W13") return; // 1. Proteksi hilangkan data W13 dari perhitungan
                 const nama = item.nama_barang || '';
                 
                 const matchEntity = (selectedEntity === "ALL" || entitas === selectedEntity.toUpperCase());
@@ -323,15 +321,17 @@
                 }
             });
 
-            // Filter log breakdown untuk di-render di tabel
             const filteredLog = globalLogBreakdown.filter(log => {
-                const matchEntity = (selectedEntity === "ALL" || log.wilayahParent.trim().toUpperCase() === selectedEntity.toUpperCase());
+                const entitasLog = log.wilayahParent.trim().toUpperCase();
+                if (entitasLog === "W13") return false; // 1. Jangan masukkan log W13 ke TAB 2
+                
+                const matchEntity = (selectedEntity === "ALL" || entitasLog === selectedEntity.toUpperCase());
                 const matchBarang = (selectedBarang === "ALL" || log.namaBarang.trim().toUpperCase() === selectedBarang.toUpperCase());
                 return matchEntity && matchBarang;
             });
 
             if (filteredLog.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="17" class="py-6 text-gray-400 italic">Tidak ditemukan rincian data log untuk filter dimaksud.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="18" class="py-6 text-gray-400 italic">Tidak ditemukan rincian data log untuk filter dimaksud.</td></tr>`;
                 document.getElementById('sumTotalENP').textContent = formatRupiah(totalMaksimumPaguENP);
                 document.getElementById('sumTotalAlokasi').textContent = formatRupiah(0);
                 return;
@@ -343,9 +343,9 @@
                     (item.entitas || '').trim().toUpperCase() === log.wilayahParent.trim().toUpperCase()
                 );
                 const hargaSatuan = masterItem ? cleanNumber(masterItem.price) : 0;
+                
+                // 2. Kalkulasi Rencana Realisasi (Qty total inputan breakdown dikalikan harga satuan barang)
                 const nilaiRupiahLog = (parseInt(log.quantity) || 0) * hargaSatuan;
-
-                // 3. Akumulasikan nominal inputan realisasi wilayah ke Total Rencana Realisasi
                 totalRealisasiAlokasi += nilaiRupiahLog;
 
                 const tr = document.createElement('tr');
@@ -362,6 +362,7 @@
                     <td class="px-2 py-2 text-left text-gray-600 border-r border-gray-100">${log.subEntity}</td>
                     <td class="px-2 py-2 font-bold text-teal-700 bg-teal-50/30 border-r border-gray-200">${log.quantity}</td>
                     ${bHtml}
+                    <td class="px-2 py-2 font-semibold text-teal-900 bg-amber-50/60 border-r border-amber-200 text-right font-mono">${formatRupiah(nilaiRupiahLog)}</td>
                     <td class="px-2 py-2 flex gap-1 justify-center">
                         <button onclick="triggerEditFromLog('${log.namaBarang}', '${log.wilayahParent}')" class="px-2 py-1 bg-amber-600 hover:bg-amber-700 text-white rounded text-[10px] font-semibold transition shadow-sm">
                             ✏️ Edit
@@ -374,7 +375,6 @@
                 tbody.appendChild(tr);
             });
 
-            // Update box atas sesuai dengan instruksi perubahan nomor 3 dan 4
             document.getElementById('sumTotalENP').textContent = formatRupiah(totalMaksimumPaguENP);
             document.getElementById('sumTotalAlokasi').textContent = formatRupiah(totalRealisasiAlokasi);
         }
@@ -459,9 +459,7 @@
             currentItemPrice = cleanNumber(itemTerpilih.price);
             currentItemAlokasiENP = cleanNumber(itemTerpilih.alokasi) || (maxQty * currentItemPrice);
 
-            // 1. Menyuntikkan informasi Harga Satuan ke dalam elemen Box Info Pop-up Modal
             document.getElementById('modalHargaSatuan').textContent = formatRupiah(currentItemPrice);
-
             openBreakdownModal(nama, maxQty, entitas);
         }
 
@@ -655,7 +653,6 @@
             }
         }
 
-
         function formatRupiah(angka) {
             return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(angka);
         }
@@ -697,15 +694,17 @@
             if (tbody) tbody.innerHTML = "";
 
             let akumulasiENP = 0;
-            let akumulasiAlokasi = 0;
+            let akumulasiAlokasiMenjadi = 0;
 
             globalDatabaseBarang.forEach((item, index) => {
+                const entitas = (item.entitas || '-').trim().toUpperCase();
+                if (entitas === "W13") return; // 1. Hilangkan W13 dari render tabel TAB 1
+                
                 const nama = item.nama_barang || '';
                 const qty = cleanNumber(item.quantity);
                 const harga = cleanNumber(item.price);
                 const enp = cleanNumber(item.enp) || (qty * harga);
-                let alokasi = cleanNumber(item.alokasi); 
-                const entitas = (item.entitas || '-').trim().toUpperCase();
+                let alokasiPlafon = cleanNumber(item.alokasi); 
 
                 if (!nama) return;
 
@@ -713,16 +712,17 @@
                 const matchBarang = (selectedBarang === "ALL" || nama.trim().toUpperCase() === selectedBarang.toUpperCase());
 
                 if (matchEntity && matchBarang) {
+                    // Hitung total quantity yang sudah di-breakdown khusus untuk barang dan wilayah ini
                     const totalQtyTelahBreakdown = globalLogBreakdown
                         .filter(log => log.namaBarang.trim().toUpperCase() === nama.trim().toUpperCase() && 
                                        log.wilayahParent.trim().toUpperCase() === entitas)
                         .reduce((sum, log) => sum + (parseInt(log.quantity) || 0), 0);
 
+                    // 3. Kolom "Alokasi Menjadi" dihitung dari total qty breakdown riil * harga satuan
                     const nominalTelahBreakdown = totalQtyTelahBreakdown * harga;
-                    const sisaAlokasiSistem = alokasi - nominalTelahBreakdown;
 
                     akumulasiENP += enp;
-                    akumulasiAlokasi += (sisaAlokasiSistem > 0 ? sisaAlokasiSistem : 0);
+                    akumulasiAlokasiMenjadi += nominalTelahBreakdown;
 
                     if (tbody) {
                         const tr = document.createElement('tr');
@@ -733,7 +733,8 @@
                             <td class="px-3 py-2.5 text-center font-bold text-teal-600">${qty}</td>
                             <td class="px-3 py-2.5 text-right text-gray-600">${formatRupiah(harga)}</td>
                             <td class="px-3 py-2.5 text-right font-semibold text-gray-700">${formatRupiah(enp)}</td>
-                            <td class="px-3 py-2.5 text-right font-semibold text-amber-700">${formatRupiah(alokasi)}</td>
+                            <td class="px-3 py-2.5 text-right font-semibold text-gray-500">${formatRupiah(alokasiPlafon)}</td>
+                            <td class="px-3 py-2.5 text-right font-bold text-amber-700 bg-teal-50/40">${formatRupiah(nominalTelahBreakdown)}</td>
                             <td class="px-3 py-2.5 text-center"><span class="px-2 py-0.5 bg-teal-100 text-teal-800 rounded text-xs font-mono font-bold">${entitas}</span></td>
                         `;
                         tbody.appendChild(tr);
@@ -742,7 +743,8 @@
             });
 
             document.getElementById('sumTotalENP').textContent = formatRupiah(akumulasiENP);
-            document.getElementById('sumTotalAlokasi').textContent = formatRupiah(akumulasiAlokasi);
+            // Box total kanan atas disesuaikan dengan total akumulasi rencana realisasi riil
+            document.getElementById('sumTotalAlokasi').textContent = formatRupiah(akumulasiAlokasiMenjadi);
         }
 
         function closeModal() {
