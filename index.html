@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Form Breakdown Perabotan RBB 2026</title>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/html-to-image/1.11.11/html-to-image.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <style>
         .loader {
@@ -234,18 +235,21 @@
             </div>
         </div>
 
-        <div class="border border-teal-100 rounded-xl overflow-hidden bg-white">
-            <div class="bg-teal-900 px-4 py-2 text-white font-bold text-xs">
-                📋 Ringkasan Hasil Rencana Realisasi Perabotan Non Otomasi Tahun 2026
+        <div id="rekapKonfirmasiWrapper" class="border border-teal-100 rounded-xl overflow-hidden bg-white shadow-sm">
+            <div class="bg-teal-900 px-4 py-3 text-white font-bold text-xs flex justify-between items-center select-none">
+                <span class="flex items-center gap-1">📋 Progress Penyampaian Rincian Rencana Realisasi Perabotan Non Otomasi - CAPEX 2026</span>
+                <button type="button" onclick="captureConfirmationTable()" class="px-2.5 py-1 bg-amber-600 hover:bg-amber-700 text-white font-bold text-[11px] rounded transition shadow flex items-center gap-1 cursor-pointer">
+                    📸 Screenshot Tabel Report
+                </button>
             </div>
             <div class="overflow-x-auto">
                 <table class="min-w-full divide-y divide-gray-200 text-xs text-center">
                     <thead class="bg-gray-50 select-none">
                         <tr>
-                            <th class="px-3 py-2.5 text-left font-semibold text-teal-950 w-24">Wilayah</th>
-                            <th class="px-3 py-2.5 text-right font-semibold text-teal-950 w-36">Plafon Maks. ENP</th>
+                            <th class="px-3 py-2.5 text-left font-semibold text-teal-950 w-48">Wilayah</th> <th class="px-3 py-2.5 text-right font-semibold text-teal-950 w-36">Plafon Maks. ENP</th>
                             <th class="px-3 py-2.5 text-right font-semibold text-teal-950 w-40">Usul Alokasi Revisi RBB 2026</th>
-                            <th class="px-3 py-2.5 text-right font-semibold text-teal-950 bg-teal-50 text-teal-900 w-40">Rencana Realisasi Aktual</th> <th class="px-3 py-2.5 text-center font-semibold text-teal-950 w-36">Status Konfirmasi</th>
+                            <th class="px-3 py-2.5 text-right font-semibold text-teal-950 bg-teal-50 text-teal-900 w-40">Rencana Realisasi Aktual</th>
+                            <th class="px-3 py-2.5 text-center font-semibold text-teal-950 w-48">Status Konfirmasi</th>
                         </tr>
                     </thead>
                     <tbody id="tableConfirmationSummaryBody" class="divide-y divide-gray-100 font-medium bg-white">
@@ -1544,8 +1548,58 @@
             }
         }
 
+        // Object Mapping Nama Kantor Wilayah Lengkap
+        const mappingNamaWilayah = {
+            "W01": "W01 - Medan",
+            "W02": "W02 - Padang",
+            "W03": "W03 - Palembang",
+            "W04": "W04 - Bandung",
+            "W05": "W05 - Semarang",
+            "W06": "W06 - Surabaya",
+            "W07": "W07 - Makassar",
+            "W08": "W08 - Denpasar",
+            "W09": "W09 - Banjarmasin",
+            "W10": "W10 - Jakarta Senayan",
+            "W11": "W11 - Manado",
+            "W12": "W12 - Jakarta Kota",
+            "W14": "W14 - Jakarta Bsd",
+            "W15": "W15 - Jakarta Kemayoran",
+            "W16": "W16 - Papua",
+            "W17": "W17 - Yogyakarta",
+            "W18": "W18 - Malang"
+        };
+
         // =========================================================================
-        // REVISI TAB 4: TAMBAH KATEGORI "BELUM MENYAMPAIKAN USULAN" JIKA DATA 0
+        // FUNGSI UTILITY BARU: FORMAT TANGGAL UTC KE LOCAL WIB (YYYY-MM-DD HH:mm:ss)
+        // =========================================================================
+        function formatTanggalKeWib(waktuRaw) {
+            if (!waktuRaw || waktuRaw === '-') return '-';
+            
+            try {
+                // Konversi string mentah dari database menjadi object Date Javascript resmi
+                const dateObj = new Date(waktuRaw);
+                
+                // Cek validitas penanggalan
+                if (isNaN(dateObj.getTime())) {
+                    return waktuRaw.toString().replace("T", " ").split(".")[0];
+                }
+
+                // Ambil komponen tanggal lokal browser (otomatis mengikuti GMT+7 jika di Indonesia)
+                const year = dateObj.getFullYear();
+                const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+                const day = String(dateObj.getDate()).padStart(2, '0');
+                const hours = String(dateObj.getHours()).padStart(2, '0');
+                const minutes = String(dateObj.getMinutes()).padStart(2, '0');
+                const seconds = String(dateObj.getSeconds()).padStart(2, '0');
+
+                return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+            } catch (err) {
+                return waktuRaw.toString();
+            }
+        }
+
+        // =========================================================================
+        // REVISI SELESAI: RENDER TAB 4 DENGAN SINKRONISASI JAM WIB YANG AKURAT
         // =========================================================================
         function renderLembarKonfirmasi() {
             const tbody = document.getElementById('tableConfirmationSummaryBody');
@@ -1560,8 +1614,9 @@
 
             checkboxes.forEach(chk => {
                 const wil = chk.value.toString().trim().toUpperCase();
-                let totalPaguMaks = 0;
+                const namaWilayahLengkap = mappingNamaWilayah[wil] || wil;
                 
+                let totalPaguMaks = 0;
                 globalDatabaseBarang.forEach(item => {
                     if ((item.entitas || '').toString().trim().toUpperCase() === wil) {
                         const qty = cleanNumber(item.quantity);
@@ -1589,33 +1644,121 @@
 
                 const totalRevisisRBB = totalRencanaRealisasiAktual;
 
-                // LOGIKA BARU: Penentuan status konfirmasi berdasarkan isi nominal data usulan
-                let isLocked = isWilayahLocked(wil);
+                const dataKuncianWilayah = globalListKonfirmasi.find(k => 
+                    k.wilayah.toString().trim().toUpperCase() === wil
+                );
+
                 let statusHtml = "";
 
-                if (isLocked) {
-                    statusHtml = `<span class="text-teal-700 font-bold bg-teal-50 px-2 py-0.5 rounded border border-teal-200 text-[11px]">🔒 Terkonfirmasi</span>`;
+                if (dataKuncianWilayah) {
+                    // PENGGUNAAN FORMATTER WIB BARU AGAR SAMA PERSIS DENGAN GOOGLE SHEETS
+                    const waktuFormatWib = formatTanggalKeWib(dataKuncianWilayah.tanggal);
+
+                    statusHtml = `
+                        <div class="flex flex-col items-center justify-center gap-1 p-1">
+                            <span class="text-teal-700 font-bold bg-teal-50 px-2 py-0.5 rounded border border-teal-200 text-[11px] select-none">🔒 Lengkap & Tervalidasi</span>
+                            <div class="text-[10px] text-gray-500 font-sans text-left bg-gray-50 p-1.5 rounded border border-gray-200 w-full max-w-[190px] space-y-0.5 mt-1 shadow-inner">
+                                <p class="truncate">👤 <strong>Oleh:</strong> ${dataKuncianWilayah.nama || '-'}</p>
+                                <p class="truncate">💼 <strong>Jabatan:</strong> ${dataKuncianWilayah.jabatan || '-'}</p>
+                                <p class="text-[9px] text-gray-400 font-mono flex items-center gap-0.5">📅 ${waktuFormatWib}</p>
+                            </div>
+                        </div>
+                    `;
                 } else if (totalRevisisRBB === 0 && totalRencanaRealisasiAktual === 0) {
-                    // Kategori Baru: Jika kedua nilai aktual masih kosong (0)
                     statusHtml = `<span class="text-red-500 font-medium bg-red-100 px-2 py-0.5 rounded border border-red-300 text-[11px]">🔴 Belum Menyampaikan Usulan</span>`;
                 } else {
                     statusHtml = `<span class="text-amber-700 font-medium bg-amber-50 px-2 py-0.5 rounded border border-amber-200 text-[11px]">⏳ Belum Konfirmasi</span>`;
                 }
 
                 const tr = document.createElement('tr');
-                tr.className = "hover:bg-gray-50/80 transition-colors align-middle";
+                tr.className = "hover:bg-gray-50/80 transition-colors align-middle border-b border-gray-100";
                 
                 tr.innerHTML = `
-                    <td class="px-3 py-2.5 text-left font-mono font-bold text-teal-900 bg-gray-50/20">${wil}</td>
+                    <td class="px-3 py-2.5 text-left font-sans font-bold text-teal-900 bg-gray-50/20">${namaWilayahLengkap}</td> 
                     <td class="px-3 py-2.5 text-right font-mono text-gray-600">${formatRupiah(totalPaguMaks)}</td>
                     <td class="px-3 py-2.5 text-right font-mono font-semibold text-gray-700">${formatRupiah(totalRevisisRBB)}</td>
                     <td class="px-3 py-2.5 text-right font-mono font-bold text-teal-950 bg-teal-50/40">${formatRupiah(totalRencanaRealisasiAktual)}</td>
-                    <td class="px-3 py-2.5 text-center">${statusHtml}</td>
+                    <td class="px-3 py-2 text-center">${statusHtml}</td>
                 `;
                 tbody.appendChild(tr);
             });
 
             toggleSubmitConfirmBtn();
+        }
+
+        // =========================================================================
+        // FIX MUTLAK: BYPASS OVERFLOW TAILWIND SECARA DINAMIS (ANTI TERPOTONG)
+        // =========================================================================
+        function captureConfirmationTable() {
+            const targetElement = document.getElementById('rekapKonfirmasiWrapper');
+            
+            const checkboxes = document.querySelectorAll('.chk-wilayah-confirm:checked');
+            if (checkboxes.length === 0) {
+                alert("⚠️ Gagal Capture! Harap pilih/centang minimal satu wilayah terlebih dahulu untuk memunculkan tabel report.");
+                return;
+            }
+
+            // Tampilkan loading screen
+            document.getElementById('loading').classList.remove('hidden');
+
+            // 1. Cari elemen pembungkus tabel yang memiliki kelas overflow/max-height di dalam kontainer
+            const tableContainer = targetElement.querySelector('.overflow-x-auto');
+            
+            // Simpan style asli browser sebelum dimanipulasi agar tampilan di layar tidak rusak
+            const originalMaxHeight = tableContainer ? tableContainer.style.maxHeight : '';
+            const originalOverflowX = tableContainer ? tableContainer.style.overflowX : '';
+            const originalOverflowY = tableContainer ? tableContainer.style.overflowY : '';
+
+            if (tableContainer) {
+                // Paksa elemen tabel melebar dan memanjang penuh tanpa scrollbar internal
+                tableContainer.style.maxHeight = 'none';
+                tableContainer.style.overflowX = 'visible';
+                tableContainer.style.overflowY = 'visible';
+            }
+
+            // Jeda 100ms agar browser selesai menerapkan perubahan layout fisik tabel
+            setTimeout(() => {
+                const realHeight = targetElement.scrollHeight;
+                const realWidth = targetElement.scrollWidth;
+
+                htmlToImage.toPng(targetElement, {
+                    quality: 1.0, // Maksimalkan kualitas piksel gambar
+                    backgroundColor: '#ffffff',
+                    width: realWidth,
+                    height: realHeight,
+                    style: {
+                        transform: 'scale(1)',
+                        transformOrigin: 'top left',
+                        width: realWidth + 'px',
+                        height: realHeight + 'px'
+                    }
+                })
+                .then(function (dataUrl) {
+                    const downloadLink = document.createElement('a');
+                    downloadLink.href = dataUrl;
+                    
+                    const tglFile = new Intl.DateTimeFormat('id-ID', { dateStyle: 'medium' }).format(new Date()).replace(/\s+/g, '_');
+                    downloadLink.download = `Report_Realisasi_Perabotan_${tglFile}.png`;
+                    
+                    document.body.appendChild(downloadLink);
+                    downloadLink.click();
+                    document.body.removeChild(downloadLink);
+                })
+                .catch(function (error) {
+                    console.error('Detail masalah pembuatan gambar report:', error);
+                    alert('Terjadi kendala saat mengonversi file gambar pelaporan.');
+                })
+                .finally(function () {
+                    // 2. KEMBALIKAN STYLE ASLI TABLE DI LAYAR (Aplikasi tetap rapi dan ada scrollbar kembali)
+                    if (tableContainer) {
+                        tableContainer.style.maxHeight = originalMaxHeight;
+                        tableContainer.style.overflowX = originalOverflowX;
+                        tableContainer.style.overflowY = originalOverflowY;
+                    }
+                    // Matikan loading screen
+                    document.getElementById('loading').classList.add('hidden');
+                });
+            }, 100);
         }
 
         function toggleSubmitConfirmBtn() {
