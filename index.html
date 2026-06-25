@@ -31,85 +31,106 @@
             <p class="text-white font-semibold">Sinkronisasi Database...</p>
         </div>
 
-        <div class="flex flex-col lg:flex-row gap-6">
+        <div id="sidebarPanduan" class="w-full bg-white p-5 mb-6 rounded-xl shadow-sm border border-teal-100">
+            <h2 class="text-sm font-bold text-teal-900 mb-2.5 pb-1 border-b border-teal-100 flex items-center gap-1.5">
+                💡 Panduan Pengisian Aplikasi
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs text-gray-600 leading-relaxed">
+                <div class="space-y-1">
+                    <p>1. Gunakan <strong>Filter Wilayah / Barang</strong> untuk mempercepat pencarian data spesifik Anda.</p>
+                    <p>2. Monitor sisa anggaran melalui box <strong>Total Maks Pagu</strong> dan <strong>Total Rencana Realisasi</strong>.</p>
+                </div>
+                <div class="space-y-1">
+                    <p>3. Untuk mengisi distribusi cabang, silakan klik tombol <span class="text-teal-700 font-bold">📝 Breakdown</span> pada baris barang terkait.</p>
+                    <p>4. Tombol <span class="text-amber-700 font-bold">✏️ Edit</span> hanya bisa dilakukan oleh Admin.</p>
+                </div>
+                <div class="space-y-1">
+                    <p>5. Lakukan pengecekan rekapitulasi sebaran bulanan Anda pada menu <strong>TAB 2</strong> dan <strong>TAB 3</strong>.</p>
+                    <p>6. Jika inputan selesai, buka <strong>TAB 4 (Lembar Konfirmasi)</strong> untuk melakukan <span class="text-red-600 font-bold">Konfirmasi & Mengunci hasil inputan</span>.</p>
+                </div>
+            </div>
+            <div class="mt-3 p-2 bg-teal-50 rounded-lg border border-teal-100 text-[11px] text-teal-950">
+                <strong>Catatan:</strong> Format Bulk Upload file CSV hanya dapat dilakukan oleh admin system.
+            </div>
+        </div>
+
+        <div id="mainContentArea" class="w-full space-y-4 flex flex-col transition-all duration-300">
             
-            <div id="sidebarPanduan" class="w-full lg:w-1/4 bg-white p-5 rounded-xl shadow-md border border-teal-100 h-fit shrink-0">
-                <h2 class="text-lg font-bold text-teal-900 mb-3 pb-2 border-b border-teal-100">Panduan Pengisian</h2>
-                <ol class="list-decimal list-inside space-y-2.5 text-sm text-gray-600">
-                    <li>Gunakan **Filter** untuk mencari Wilayah, Barang, atau Sub Entity spesifik Anda.</li>
-                    <li>Lihat box **Total Rencana Realisasi** untuk memonitor total rencana realisasi saat ini.</li>
-                    <li><span class="text-teal-700 font-semibold">Klik pada baris tabel</span> di Data Acuan Plafon untuk memunculkan formulir input.</li>
-<li>TAB 2. Monitoring Hasil Breakdown Wilayah untuk melihat dan mengedit hasil inputan.</li>
-<li>TAB 3. Summary Breakdown Perabotan untuk melihat rekapitulasi hasil inputan.</li>
-                </ol>
-                <div class="mt-5 p-3 bg-teal-50 rounded-lg border border-teal-200 text-xs text-teal-950">
-                    <strong>Catatan:</strong> Data input breakdown Anda akan dikirim ke basis data log breakdown terpisah untuk divalidasi sistem.
+            <div class="flex flex-wrap border-b border-teal-200 gap-1.5">
+                <button id="tabBtnAcuan" onclick="switchTab('acuan')" class="px-4 py-2.5 font-bold text-xs md:text-sm rounded-t-xl transition-all bg-white text-teal-950 border-t border-x border-teal-200 -mb-[1px]">
+                    📋 1. Data Acuan Plafon
+                </button>
+                <button id="tabBtnMonitoring" onclick="switchTab('monitoring')" class="px-4 py-2.5 font-semibold text-xs md:text-sm rounded-t-xl transition-all bg-teal-50/50 text-teal-700 hover:bg-teal-100/50">
+                    📊 2. Monitoring Hasil Breakdown Wilayah
+                </button>
+                <button id="tabBtnSummary" onclick="switchTab('summary')" class="px-4 py-2.5 font-semibold text-xs md:text-sm rounded-t-xl transition-all bg-teal-50/50 text-teal-700 hover:bg-teal-100/50">
+                    🗂️ 3. Summary Breakdown Perabotan
+                </button>
+                <button id="tabBtnKonfirmasi" onclick="switchTab('konfirmasi')" class="px-4 py-2.5 font-semibold text-xs md:text-sm rounded-t-xl transition-all bg-teal-50/50 text-teal-700 hover:bg-teal-100/50">
+                    🔏 4. Lembar Konfirmasi
+                </button>
+            </div>
+            
+            <div id="filterGridContainer" class="bg-white p-5 rounded-xl shadow-md border border-teal-100 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4 transition-all duration-300">
+                <div id="wrapperFilterEntity">
+                    <label class="block text-xs font-semibold text-teal-900 mb-1">Filter Wilayah</label>
+                    <select id="filterEntity" onchange="populateFilterSubEntityDropdown(); applyFilters();" class="w-full p-2 border border-gray-300 rounded-lg bg-gray-50 text-sm focus:ring-2 focus:ring-teal-500 outline-none">
+                        <option value="ALL">-- Semua Wilayah --</option>
+                    </select>
+                </div>
+                <div id="wrapperFilterBarang">
+                    <label class="block text-xs font-semibold text-teal-900 mb-1">Filter Nama Barang</label>
+                    <select id="filterBarang" onchange="applyFilters()" class="w-full p-2 border border-gray-300 rounded-lg bg-gray-50 text-sm focus:ring-2 focus:ring-teal-500 outline-none">
+                        <option value="ALL">-- Semua Nama Barang --</option>
+                    </select>
+                </div>
+                <div id="containerFilterSubEntity" class="hidden">
+                    <label class="block text-xs font-semibold text-teal-900 mb-1">Filter Sub Entity</label>
+                    <select id="filterSubEntity" onchange="applyFilters()" class="w-full p-2 border border-gray-300 rounded-lg bg-gray-50 text-sm focus:ring-2 focus:ring-teal-500 outline-none">
+                        <option value="ALL">-- Semua Sub Entity --</option>
+                    </select>
+                </div>
+                <div class="bg-teal-50 p-3 rounded-lg border border-teal-100 flex flex-col justify-center">
+                    <span class="text-[10px] uppercase font-bold text-teal-800 tracking-wider">Total Maks. Pagu ENP</span>
+                    <span id="sumTotalENP" class="text-sm font-bold text-teal-950 mt-0.5">Rp0</span>
+                </div>
+                <div class="bg-amber-50 p-3 rounded-lg border border-amber-100 flex flex-col justify-center">
+                    <span class="text-[10px] uppercase font-bold text-amber-800 tracking-wider">Total Rencana Realisasi</span>
+                    <span id="sumTotalAlokasi" class="text-sm font-bold text-amber-950 mt-0.5">Rp0</span>
                 </div>
             </div>
 
-            <div id="mainContentArea" class="w-full lg:w-3/4 space-y-4 flex flex-col transition-all duration-300">
-    
-    <div class="flex flex-wrap border-b border-teal-200 gap-1.5">
-        <button id="tabBtnAcuan" onclick="switchTab('acuan')" class="px-4 py-2.5 font-bold text-xs md:text-sm rounded-t-xl transition-all bg-white text-teal-950 border-t border-x border-teal-200 -mb-[1px]">
-            📋 1. Data Acuan Plafon
-        </button>
-        <button id="tabBtnMonitoring" onclick="switchTab('monitoring')" class="px-4 py-2.5 font-semibold text-xs md:text-sm rounded-t-xl transition-all bg-teal-50/50 text-teal-700 hover:bg-teal-100/50">
-            📊 2. Monitoring Hasil Breakdown Wilayah
-        </button>
-        <button id="tabBtnSummary" onclick="switchTab('summary')" class="px-4 py-2.5 font-semibold text-xs md:text-sm rounded-t-xl transition-all bg-teal-50/50 text-teal-700 hover:bg-teal-100/50">
-            🗂️ 3. Summary Breakdown Perabotan
-        </button>
-    </div>
-    
-    <div id="filterGridContainer" class="bg-white p-5 rounded-xl shadow-md border border-teal-100 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 transition-all duration-300">
-        <div id="wrapperFilterEntity">
-            <label class="block text-xs font-semibold text-teal-900 mb-1">Filter Wilayah</label>
-            <select id="filterEntity" onchange="populateFilterSubEntityDropdown(); applyFilters();" class="w-full p-2 border border-gray-300 rounded-lg bg-gray-50 text-sm focus:ring-2 focus:ring-teal-500 outline-none">
-                <option value="ALL">-- Semua Wilayah --</option>
-            </select>
-        </div>
-        <div id="wrapperFilterBarang">
-            <label class="block text-xs font-semibold text-teal-900 mb-1">Filter Nama Barang</label>
-            <select id="filterBarang" onchange="applyFilters()" class="w-full p-2 border border-gray-300 rounded-lg bg-gray-50 text-sm focus:ring-2 focus:ring-teal-500 outline-none">
-                <option value="ALL">-- Semua Nama Barang --</option>
-            </select>
-        </div>
-        <div id="containerFilterSubEntity">
-            <label class="block text-xs font-semibold text-teal-900 mb-1">Filter Sub Entity</label>
-            <select id="filterSubEntity" onchange="applyFilters()" class="w-full p-2 border border-gray-300 rounded-lg bg-gray-50 text-sm focus:ring-2 focus:ring-teal-500 outline-none">
-                <option value="ALL">-- Semua Sub Entity --</option>
-            </select>
-        </div>
-        <div class="bg-teal-50 p-3 rounded-lg border border-teal-100 flex flex-col justify-center">
-            <span class="text-[10px] uppercase font-bold text-teal-800 tracking-wider">Total Maks. Pagu ENP</span>
-            <span id="sumTotalENP" class="text-sm font-bold text-teal-950 mt-0.5">Rp0</span>
-        </div>
-        <div class="bg-amber-50 p-3 rounded-lg border border-amber-100 flex flex-col justify-center">
-            <span class="text-[10px] uppercase font-bold text-amber-800 tracking-wider">Total Rencana Realisasi</span>
-            <span id="sumTotalAlokasi" class="text-sm font-bold text-amber-950 mt-0.5">Rp0</span>
-        </div>
-    </div>
+            <div id="tabContentAcuan" class="bg-white p-5 rounded-xl shadow-md border border-teal-100 flex flex-col">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-4">
+                    <h2 class="text-base font-bold text-teal-900">Data Acuan Plafon Perabotan (Cf. Persetujuan Dir. Sektor)</h2>
+                    
+                    <div class="flex items-center gap-2 p-2 bg-teal-50 rounded-xl border border-teal-200 text-xs">
+                        <span class="font-bold text-teal-950">📦 Bulk Upload Master (CSV):</span>
+                        <input type="file" id="csvBulkFile" accept=".csv" class="w-44 text-xs text-gray-600 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-teal-700 file:text-white hover:file:bg-black transition cursor-pointer">
+                        <button type="button" onclick="handleBulkCSVUpload()" class="px-2.5 py-1 bg-amber-600 text-white font-bold rounded hover:bg-amber-700 transition shadow-sm cursor-pointer">Upload</button>
+                    </div>
+                </div>
 
-    <div id="tabContentAcuan" class="bg-white p-5 rounded-xl shadow-md border border-teal-100 flex flex-col">
-        <h2 class="text-base font-bold text-teal-900 mb-3">Data Acuan Plafon Perabotan (Cf. Persetujuan Dir. Sektor)</h2>
-        <div class="overflow-x-auto max-h-[500px]">
-            <table class="min-w-full divide-y divide-gray-200 text-sm">
-                <thead class="bg-teal-50 sticky top-0 z-10">
-                    <tr>
-                        <th class="px-3 py-2.5 text-left font-semibold text-teal-900">Nama Barang</th>
-                        <th class="px-3 py-2.5 text-center font-semibold text-teal-900">Plafon Qty</th>
-                        <th class="px-3 py-2.5 text-right font-semibold text-teal-900">Harga Satuan</th>
-                        <th class="px-3 py-2.5 text-right font-semibold text-teal-900">Total ENP</th>
-                        <th class="px-3 py-2.5 text-right font-semibold text-teal-900">Usulan Alokasi Awal</th>
-                        <th class="px-3 py-2.5 text-right font-semibold text-teal-900 bg-teal-100/50 text-teal-950">Usul Alokasi Revisi RBB</th>
-                        <th class="px-3 py-2.5 text-center font-semibold text-teal-900">Entitas</th>
-                    </tr>
-                </thead>
-                <tbody id="databaseAcuanBody" class="divide-y divide-gray-100 cursor-pointer">
-                </tbody>
-            </table>
-        </div>
-    </div>
+                <div class="overflow-x-auto max-h-[500px]">
+                    <table class="min-w-full divide-y divide-gray-200 text-sm tracking-tight">
+                        <thead class="bg-teal-950 text-white sticky top-0 z-10 select-none">
+                            <tr>
+                                <th class="px-2 py-3 text-center font-semibold text-xs w-12">No.</th> <th class="px-3 py-3 text-left font-semibold text-xs">Nama Barang</th>
+                                <th class="px-3 py-3 text-center font-semibold text-xs w-24">Plafon Qty</th>
+                                <th class="px-3 py-3 text-right font-semibold text-xs w-32">Harga Satuan</th>
+                                <th class="px-3 py-3 text-right font-semibold text-xs w-32">Total ENP</th>
+                                <th class="px-3 py-3 text-right font-semibold text-xs w-32">Usulan Alokasi Awal</th>
+                                <th class="px-3 py-3 text-right font-semibold text-xs bg-teal-900 text-amber-200 w-36">Usul Alokasi Revisi RBB</th>
+                                <th class="px-3 py-3 text-center font-semibold text-xs w-20">Entitas</th>
+                                <th class="px-3 py-3 text-center font-semibold text-xs w-44">Aksi / Pilihan</th>
+                            </tr>
+                        </thead>
+                        <tbody id="databaseAcuanBody" class="divide-y divide-gray-100 bg-white">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
 
     <div id="tabContentMonitoring" class="bg-white p-5 rounded-xl shadow-md border border-teal-100 flex flex-col hidden">
         <div class="flex justify-between items-center mb-3">
@@ -187,7 +208,7 @@
                         <th class="p-1 font-light bg-teal-800/50 border-r border-teal-700/40 w-7 text-center">Sep</th>
                         <th class="p-1 font-light bg-teal-800/50 border-r border-teal-700/40 w-7 text-center">Okt</th>
                         <th class="p-1 font-light bg-teal-800/50 border-r border-teal-700/40 w-7 text-center">Nov</th>
-                        <th class="p-1 font-light bg-teal-800/50 border-r border-teal-800 w-7 text-center">Des</th>
+                        <th class="p-1 font-light bg-teal-800/50 border-teal-850 w-7 text-center">Des</th>
                         <th class="px-2 py-2 text-center font-medium bg-amber-950 border-r border-amber-800 w-24 text-amber-200">Harga Satuan Final</th>
                         <th class="px-2 py-2 text-center font-bold bg-amber-900 border-r border-amber-800 w-28 text-amber-100">Total Rencana Realisasi</th>
                     </tr>
@@ -198,6 +219,72 @@
                     </tr>
                 </tbody>
             </table>
+        </div>
+    </div>
+
+    <div id="tabContentKonfirmasi" class="bg-white p-5 rounded-xl shadow-md border border-teal-100 flex flex-col hidden space-y-6">
+        <div>
+            <h2 class="text-base font-bold text-teal-900 mb-1">🔏 Lembar Validasi & Konfirmasi Hasil Breakdown Wilayah</h2>
+            <p class="text-xs text-gray-500">Silakan pilih Wilayah Anda untuk memverifikasi kecocokan rekapitulasi realisasi sebelum melakukan penguncian data.</p>
+        </div>
+
+        <div class="bg-teal-50/50 p-4 rounded-lg border border-teal-100">
+            <span class="block text-xs font-bold text-teal-950 mb-2 uppercase tracking-wide">Pilih Wilayah Untuk Melakukan Validasi:</span>
+            <div id="checkboxWilayahContainer" class="grid grid-cols-3 sm:grid-cols-6 gap-3 text-xs font-semibold">
+            </div>
+        </div>
+
+        <div class="border border-teal-100 rounded-xl overflow-hidden bg-white">
+            <div class="bg-teal-900 px-4 py-2 text-white font-bold text-xs">
+                📋 Ringkasan Hasil Rencana Realisasi Perabotan Non Otomasi Tahun 2026
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200 text-xs text-center">
+                    <thead class="bg-gray-50 select-none">
+                        <tr>
+                            <th class="px-3 py-2.5 text-left font-semibold text-teal-950 w-24">Wilayah</th>
+                            <th class="px-3 py-2.5 text-right font-semibold text-teal-950 w-36">Plafon Maks. ENP</th>
+                            <th class="px-3 py-2.5 text-right font-semibold text-teal-950 w-40">Usul Alokasi Revisi RBB 2026</th>
+                            <th class="px-3 py-2.5 text-right font-semibold text-teal-950 bg-teal-50 text-teal-900 w-40">Rencana Realisasi Aktual</th> <th class="px-3 py-2.5 text-center font-semibold text-teal-950 w-36">Status Konfirmasi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableConfirmationSummaryBody" class="divide-y divide-gray-100 font-medium bg-white">
+                        <tr>
+                            <td colspan="5" class="py-4 text-gray-400 italic text-center">Silakan centang wilayah di atas terlebih dahulu.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="formKonfirmasiPanel" class="bg-amber-50/40 p-5 rounded-xl border border-amber-200 space-y-4">
+            <div class="flex items-start gap-3">
+                <input type="checkbox" id="checkPernyataan" class="w-4 h-4 mt-0.5 text-teal-600 border-gray-300 rounded focus:ring-teal-500" onchange="toggleSubmitConfirmBtn()">
+                <label for="checkPernyataan" class="text-xs text-gray-700 leading-relaxed font-medium">
+                    Dengan ini kami menyatakan bahwa seluruh rincian distribusi perabotan Non Otomasi - CAPEX 2026 untuk Kantor Wilayah yang dipilih di atas <strong class="text-teal-950">telah lengkap, sesuai, dan diverifikasi dengan benar</strong>. Kami memahami setelah konfirmasi ini dikirim, data tersebut akan dikunci dan <strong class="text-rose-700">tidak dapat diubah atau dihapus kembali</strong> tanpa persetujuan Admin.
+                </label>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-700 mb-1">Nama Pegawai Verifikator</label>
+                    <input type="text" id="confirmNama" placeholder="Masukkan nama lengkap" class="w-full p-2 border border-gray-300 rounded-lg text-sm bg-white outline-none focus:ring-2 focus:ring-teal-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-700 mb-1">NPP / No. Pegawai</label>
+                    <input type="text" id="confirmNpp" placeholder="Masukkan NPP" class="w-full p-2 border border-gray-300 rounded-lg text-sm bg-white outline-none focus:ring-2 focus:ring-teal-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-700 mb-1">Posisi / Jabatan</label>
+                    <input type="text" id="confirmJabatan" placeholder="Contoh: Manager Umum / Pgs" class="w-full p-2 border border-gray-300 rounded-lg text-sm bg-white outline-none focus:ring-2 focus:ring-teal-500">
+                </div>
+            </div>
+
+            <div class="flex justify-end pt-2">
+                <button type="button" id="btnKirimKonfirmasi" onclick="submitConfirmationWilayah()" disabled class="px-6 py-2.5 bg-gray-300 text-gray-500 cursor-not-allowed font-bold text-sm rounded-lg transition shadow-md">
+                    🔒 Kirim & Kunci Data Wilayah
+                </button>
+            </div>
         </div>
     </div>
 
@@ -268,61 +355,60 @@
     </div>
 
     <script>
-        const API_URL = "https://script.google.com/macros/s/AKfycbycESxgefbOv_zPxKRvm2poilOIdSzA7uqqwc2l4ORZJ72YVTQG5Vv4ZYGvsH0EpAcL/exec";
+        const API_URL = "https://script.google.com/macros/s/AKfycbxA-BHTic3KEAa2qiH_YoEI3ZpPXIHUSDq0UMNPnei5jAg4pzxns9S5bdI9UGXTbrpD/exec";
         
         let globalDatabaseBarang = [];
         let globalDataOutlet = [];
         let globalLogBreakdown = []; 
+        let globalListKonfirmasi = []; 
         let currentSelectedWilayah = ""; 
         
         let currentItemPrice = 0;
         let currentItemAlokasiENP = 0;
         let currentActiveTab = "acuan";
 
-        // Global State internal untuk menyimpan status Expand / Collapse baris TAB 3
         let toggleStateSummary = {};
 
-        // OPTIMASI: Mengatur pembagian kolom grid filter dan summary box agar proporsional tanpa space kosong
         function switchTab(tabName) {
             currentActiveTab = tabName;
             const tabAcuan = document.getElementById('tabContentAcuan');
             const tabMonitoring = document.getElementById('tabContentMonitoring');
             const tabSummary = document.getElementById('tabContentSummary');
+            const tabKonfirmasi = document.getElementById('tabContentKonfirmasi');
             
             const btnAcuan = document.getElementById('tabBtnAcuan');
             const btnMonitoring = document.getElementById('tabBtnMonitoring');
             const btnSummary = document.getElementById('tabBtnSummary');
+            const btnKonfirmasi = document.getElementById('tabBtnKonfirmasi');
 
             const sidebar = document.getElementById('sidebarPanduan');
-            const mainArea = document.getElementById('mainContentArea');
-            const filterSubWrapper = document.getElementById('containerFilterSubEntity');
             const filterGrid = document.getElementById('filterGridContainer');
             
             btnAcuan.className = "px-4 py-2.5 font-semibold text-xs md:text-sm rounded-t-xl transition-all bg-teal-50/50 text-teal-700 hover:bg-teal-100/50";
             btnMonitoring.className = "px-4 py-2.5 font-semibold text-xs md:text-sm rounded-t-xl transition-all bg-teal-50/50 text-teal-700 hover:bg-teal-100/50";
             btnSummary.className = "px-4 py-2.5 font-semibold text-xs md:text-sm rounded-t-xl transition-all bg-teal-50/50 text-teal-700 hover:bg-teal-100/50";
+            btnKonfirmasi.className = "px-4 py-2.5 font-semibold text-xs md:text-sm rounded-t-xl transition-all bg-teal-50/50 text-teal-700 hover:bg-teal-100/50";
             
             tabAcuan.classList.add('hidden');
             tabMonitoring.classList.add('hidden');
             tabSummary.classList.add('hidden');
+            tabKonfirmasi.classList.add('hidden');
 
             if (tabName === 'acuan') {
                 tabAcuan.classList.remove('hidden');
                 btnAcuan.className = "px-4 py-2.5 font-bold text-xs md:text-sm rounded-t-xl transition-all bg-white text-teal-950 border-t border-x border-teal-200 -mb-[1px]";
-                sidebar.classList.remove('hidden');
-                mainArea.className = "w-full lg:w-3/4 space-y-4 flex flex-col transition-all duration-300";
-                
-                filterSubWrapper.classList.add('hidden');
-                // Di TAB 1, karena hanya ada 2 filter + 2 Box, kita pakai grid-cols-4 agar pas proporsional
-                filterGrid.className = "bg-white p-5 rounded-xl shadow-md border border-teal-100 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 transition-all duration-300";
+                sidebar.classList.remove('hidden'); // Tampilkan panduan di atas hanya di TAB 1
+                filterGrid.classList.remove('hidden');
                 applyFilters(); 
+            } else if (tabName === 'konfirmasi') {
+                sidebar.classList.add('hidden');
+                filterGrid.classList.add('hidden'); 
+                tabKonfirmasi.classList.remove('hidden');
+                btnKonfirmasi.className = "px-4 py-2.5 font-bold text-xs md:text-sm rounded-t-xl transition-all bg-white text-teal-950 border-t border-x border-teal-200 -mb-[1px]";
+                renderLembarKonfirmasi();
             } else {
                 sidebar.classList.add('hidden');
-                mainArea.className = "w-full space-y-4 flex flex-col transition-all duration-300";
-                filterSubWrapper.classList.remove('hidden');
-                // Di TAB 2 & 3, ada 3 filter + 2 Box (Total 5 elemen), kita set grid-cols-5 agar memenuhi layar secara penuh
-                filterGrid.className = "bg-white p-5 rounded-xl shadow-md border border-teal-100 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4 transition-all duration-300";
-                
+                filterGrid.classList.remove('hidden');
                 if (tabName === 'monitoring') {
                     tabMonitoring.classList.remove('hidden');
                     btnMonitoring.className = "px-4 py-2.5 font-bold text-xs md:text-sm rounded-t-xl transition-all bg-white text-teal-950 border-t border-x border-teal-200 -mb-[1px]";
@@ -337,7 +423,11 @@
 
         async function fetchAllDataFromServer() {
             try {
-                const response = await fetch(API_URL);
+                // CACHE BUSTER: Menambahkan ?_=(timestamp) memaksa Google Web App & Browser 
+                // untuk mengabaikan cache dan membaca ulang data asli dari Google Sheets secara real-time.
+                const cacheBusterUrl = API_URL + (API_URL.includes('?') ? '&' : '?') + '_=' + Date.now();
+                
+                const response = await fetch(cacheBusterUrl);
                 const textData = await response.text(); 
                 const data = JSON.parse(textData); 
                 
@@ -349,6 +439,7 @@
                 globalDatabaseBarang = data.list_perabotan || data.listPerabotan || [];
                 globalDataOutlet = data.data_outlet || data.dataOutlet || [];
                 globalLogBreakdown = data.list_log_breakdown || data.listLogBreakdown || [];
+                globalListKonfirmasi = data.list_konfirmasi || []; 
                 
                 if(!data.list_log_breakdown && !data.listLogBreakdown) {
                     globalLogBreakdown = [];
@@ -379,8 +470,23 @@
             
             await fetchAllDataFromServer();
             populateFilterBarangDropdown();
+            generateCheckboxWilayahKonfirmasi(); 
             document.getElementById('loading').classList.add('hidden');
+
+            // =========================================================================
+            // TAMBAHAN AUTOMATIC SINKRONISASI 2 ARAH (POLLING)
+            // Sistem akan otomatis menarik data segar dari Google Sheets setiap 2 menit (120000 ms)
+            // =========================================================================
+            setInterval(async () => {
+                console.log("🔄 Sinkronisasi otomatis dengan Google Sheets...");
+                await fetchAllDataFromServer();
+            }, 120000); 
         });
+
+        function isWilayahLocked(kodeWilayah) {
+            if(!kodeWilayah) return false;
+            return globalListKonfirmasi.some(k => k.wilayah.toString().trim().toUpperCase() === kodeWilayah.toString().trim().toUpperCase());
+        }
 
         async function refreshDataLog() {
             document.getElementById('loading').classList.remove('hidden');
@@ -476,32 +582,47 @@
                 const rawHargaLog = log.hargaFinal || log.harga_final || log.HargaFinal || log.HARGAFINAL;
                 const hargaSatuanFinal = rawHargaLog ? cleanNumber(rawHargaLog) : (masterItem ? cleanNumber(masterItem.price) : 0);
                 
-                const nilaiRupiahLog = (parseInt(log.quantity) || 0) * hargaSatuanFinal;
+                // Menghitung total quantity secara aktual dari sebaran sebaran bulanan
+                let qtyTotalBaris = 0;
+                let bHtml = "";
+                for(let m = 1; m <= 12; m++) {
+                    let valMo = parseInt(log.detailBulan['bulan_'+m]) || 0;
+                    qtyTotalBaris += valMo;
+                    bHtml += `<td class="p-1 font-mono text-gray-600 border-r border-gray-100">${valMo}</td>`;
+                }
+
+                // Kalkulasi Finansial Aktual Berdasarkan Input Realisasi Wilayah
+                const nilaiRupiahLog = qtyTotalBaris * hargaSatuanFinal;
                 totalRealisasiAlokasi += nilaiRupiahLog;
 
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-amber-50/50 transition-colors border-b border-gray-100 text-center";
                 
-                let bHtml = "";
-                for(let m = 1; m <= 12; m++) {
-                    bHtml += `<td class="p-1 font-mono text-gray-600 border-r border-gray-100">${log.detailBulan['bulan_'+m] || 0}</td>`;
-                }
-
-                tr.innerHTML = `
-                    <td class="px-2 py-2 text-left font-mono font-bold text-teal-800 border-r border-gray-100">${log.wilayahParent}</td>
-                    <td class="px-2 py-2 text-left font-medium text-gray-900 border-r border-gray-100">${log.namaBarang}</td>
-                    <td class="px-2 py-2 text-left text-gray-600 border-r border-gray-100">${log.subEntity}</td>
-                    <td class="px-2 py-2 font-bold text-teal-700 bg-teal-50/30 border-r border-gray-200">${log.quantity}</td>
-                    ${bHtml}
-                    <td class="px-2 py-2 text-right font-mono text-gray-600 border-r border-gray-100">${formatRupiah(hargaSatuanFinal)}</td>
-                    <td class="px-2 py-2 font-bold text-teal-900 bg-amber-50/60 border-r border-amber-200 text-right font-mono">${formatRupiah(nilaiRupiahLog)}</td>
-                    <td class="px-2 py-2 flex gap-1 justify-center">
+                const isLocked = isWilayahLocked(log.wilayahParent);
+                let actionBtnHtml = "";
+                if(isLocked) {
+                    actionBtnHtml = `<span class="text-[10px] bg-red-100 text-red-700 px-2 py-0.5 rounded font-bold">🔒 Terkunci</span>`;
+                } else {
+                    actionBtnHtml = `
                         <button onclick="triggerEditFromLog('${log.namaBarang}', '${log.wilayahParent}')" class="px-2 py-1 bg-amber-600 hover:bg-amber-700 text-white rounded text-[10px] font-semibold transition shadow-sm">
                             ✏️ Edit
                         </button>
                         <button onclick="triggerDeleteRowLog('${log.namaBarang}', '${log.wilayahParent}', '${log.subEntity}')" class="px-2 py-1 bg-rose-600 hover:bg-rose-700 text-white rounded text-[10px] font-semibold transition shadow-sm">
                             🗑️ Hapus
                         </button>
+                    `;
+                }
+
+                tr.innerHTML = `
+                    <td class="px-2 py-2 text-left font-mono font-bold text-teal-800 border-r border-gray-100">${log.wilayahParent}</td>
+                    <td class="px-2 py-2 text-left font-medium text-gray-900 border-r border-gray-100">${log.namaBarang}</td>
+                    <td class="px-2 py-2 text-left text-gray-600 border-r border-gray-100">${log.subEntity}</td>
+                    <td class="px-2 py-2 font-bold text-teal-700 bg-teal-50/30 border-r border-gray-200">${qtyTotalBaris}</td>
+                    ${bHtml}
+                    <td class="px-2 py-2 text-right font-mono text-gray-600 border-r border-gray-100">${formatRupiah(hargaSatuanFinal)}</td>
+                    <td class="px-2 py-2 font-bold text-teal-900 bg-amber-50/60 border-r border-amber-200 text-right font-mono">${formatRupiah(nilaiRupiahLog)}</td>
+                    <td class="px-2 py-2 flex gap-1 justify-center items-center">
+                        ${actionBtnHtml}
                     </td>
                 `;
                 tbody.appendChild(tr);
@@ -511,7 +632,58 @@
             document.getElementById('sumTotalAlokasi').textContent = formatRupiah(totalRealisasiAlokasi);
         }
 
-        // PERBAIKAN UTAMA TAB 3: Kontrol Expand/Collapse & Menampilkan Sub-Total di Atas Baris Rincian Data
+// =========================================================================
+        // FIX: FUNGSI UNTUK MENGHAPUS LOG BREAKDOWN SECARA AKURAT (ANTI-MACET)
+        // =========================================================================
+        async function triggerDeleteRowLog(namaBarang, wilayahParent, subEntity) {
+            // Pastikan parameter dibersihkan dari spasi gaib sebelum pengecekan kunci
+            const cleanWilayah = (wilayahParent || '').toString().trim().toUpperCase();
+            const cleanNamaBarang = (namaBarang || '').toString().trim();
+            const cleanSubEntity = (subEntity || '').toString().trim();
+
+            if (isWilayahLocked(cleanWilayah)) {
+                alert(`❌ Akses ditolak! Wilayah ${cleanWilayah} ini telah dikunci.`);
+                return;
+            }
+
+            if (!confirm(`Apakah Anda yakin ingin menghapus baris breakdown unit "${cleanSubEntity}" untuk barang "${cleanNamaBarang}"?`)) {
+                return;
+            }
+
+            // Tampilkan layar loading
+            document.getElementById('loading').classList.remove('hidden');
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        action: "deleteSingleBreakdownLog",
+                        namaBarang: cleanNamaBarang,
+                        wilayahParent: cleanWilayah,
+                        subEntity: cleanSubEntity
+                    })
+                });
+
+                const res = JSON.parse(await response.text());
+                
+                if (res.error) {
+                    alert("❌ Gagal menghapus: " + res.error);
+                } else {
+                    alert("🗑️ Baris log breakdown berhasil dibersihkan dari Google Sheets!");
+                    
+                    // Tarik data terbaru dari server backend untuk merefresh TAB 2 & TAB 3
+                    await fetchAllDataFromServer();
+                }
+            } catch (e) {
+                console.error("Detail Error Hapus:", e);
+                alert("Gagal terhubung ke database server saat mencoba menghapus.");
+            } finally {
+                // Sembunyikan layar loading
+                document.getElementById('loading').classList.add('hidden');
+            }
+        }
+
         function renderSummaryBreakdown() {
             const tbody = document.getElementById('summaryTableBody');
             tbody.innerHTML = "";
@@ -543,7 +715,6 @@
                 return;
             }
 
-            // Grouping Tingkat 1: Wilayah
             let mapWilayah = {};
             filteredLogs.forEach(log => {
                 let wil = log.wilayahParent.trim().toUpperCase();
@@ -554,13 +725,29 @@
             Object.keys(mapWilayah).sort().forEach(wilayahKey => {
                 let logsDiWilayah = mapWilayah[wilayahKey];
                 
+                // 1. Kalkulasi Akurat Data Master wilayah langsung dari database acuan TAB 1
                 let wilTotalENP = 0;
                 let wilTotalUsulanAlokasi = 0;
+
+                globalDatabaseBarang.forEach(item => {
+                    const itemEntitas = (item.entitas || '-').trim().toUpperCase();
+                    const itemNama = (item.nama_barang || '').trim().toUpperCase();
+                    
+                    const matchWil = (itemEntitas === wilayahKey);
+                    const matchBarang = (selectedBarang === "ALL" || itemNama === selectedBarang.toUpperCase());
+                    
+                    if (matchWil && matchBarang) {
+                        const qty = cleanNumber(item.quantity);
+                        const harga = cleanNumber(item.price);
+                        wilTotalENP += cleanNumber(item.enp) || (qty * harga);
+                        wilTotalUsulanAlokasi += cleanNumber(item.alokasi);
+                    }
+                });
+
                 let wilTotalAlokasiMenjadi = 0;
                 let wilTotalBulan = Array(13).fill(0);
                 let wilTotalRealisasiDana = 0;
 
-                // Grouping Tingkat 2: Sub Entity (Cabang)
                 let mapSubEntity = {};
                 logsDiWilayah.forEach(log => {
                     let sub = log.subEntity.trim();
@@ -568,11 +755,9 @@
                     mapSubEntity[sub].push(log);
                 });
 
-                // ID Unik untuk keperluan Expand/Collapse Wilayah
                 const wilToggleId = 'wil_' + wilayahKey;
-                if (toggleStateSummary[wilToggleId] === undefined) toggleStateSummary[wilToggleId] = true; // Default expanded
+                if (toggleStateSummary[wilToggleId] === undefined) toggleStateSummary[wilToggleId] = true; 
 
-                // Temp array untuk menampung elemen baris sebelum dimasukkan ke DOM
                 let rowsBuffer = [];
 
                 Object.keys(mapSubEntity).sort().forEach(subEntityKey => {
@@ -592,20 +777,6 @@
                             (item.entitas || '').trim().toUpperCase() === log.wilayahParent.trim().toUpperCase()
                         );
 
-                        const totalEnpTab1 = masterItem ? cleanNumber(masterItem.enp) || (cleanNumber(masterItem.quantity) * cleanNumber(masterItem.price)) : 0;
-                        const totalUsulanAlokasiTab1 = masterItem ? cleanNumber(masterItem.alokasi) : 0;
-
-                        const siblingLogs = globalLogBreakdown.filter(l => 
-                            l.namaBarang.trim().toUpperCase() === log.namaBarang.trim().toUpperCase() && 
-                            l.wilayahParent.trim().toUpperCase() === log.wilayahParent.trim().toUpperCase()
-                        );
-                        
-                        let totalAlokasiMenjadiTab1 = 0;
-                        siblingLogs.forEach(sib => {
-                            const hf = sib.hargaFinal ? cleanNumber(sib.hargaFinal) : (masterItem ? cleanNumber(masterItem.price) : 0);
-                            totalAlokasiMenjadiTab1 += (parseInt(sib.quantity) || 0) * hf;
-                        });
-
                         const hargaSatuanFinal = log.hargaFinal ? cleanNumber(log.hargaFinal) : (masterItem ? cleanNumber(masterItem.price) : 0);
                         
                         let sumJanDes = 0;
@@ -619,19 +790,17 @@
                         }
 
                         const totalRencanaRealisasiBaris = sumJanDes * hargaSatuanFinal;
+                        const totalAlokasiMenjadiTab1 = totalRencanaRealisasiBaris; 
                         
-                        subTotalENP += totalEnpTab1;
-                        subTotalUsulanAlokasi += totalUsulanAlokasiTab1;
+                        subTotalENP += 0;
+                        subTotalUsulanAlokasi += 0;
                         subTotalAlokasiMenjadi += totalAlokasiMenjadiTab1;
                         subTotalRealisasiDana += totalRencanaRealisasiBaris;
 
-                        wilTotalENP += totalEnpTab1;
-                        wilTotalUsulanAlokasi += totalUsulanAlokasiTab1;
                         wilTotalAlokasiMenjadi += totalAlokasiMenjadiTab1;
                         wilTotalRealisasiDana += totalRencanaRealisasiBaris;
                         grandTotalRealisasi += totalRencanaRealisasiBaris;
 
-                        // Rincian Data Barang
                         const tr = document.createElement('tr');
                         tr.className = `hover:bg-teal-50/40 transition-colors border-b border-gray-200 text-center collapsible-row child-of-${wilToggleId} child-of-sub-${wilayahKey}_${subEntityKey.replace(/\s+/g, '_')}`;
                         if (!toggleStateSummary[wilToggleId]) tr.classList.add('hidden');
@@ -640,21 +809,19 @@
                             <td class="px-2 py-2 font-mono text-gray-400 border-r border-gray-200 text-center">${log.wilayahParent}</td>
                             <td class="px-2 py-2 text-gray-500 border-r border-gray-200 text-left">${log.subEntity}</td>
                             <td class="px-2 py-2 text-gray-900 font-medium border-r border-gray-200 text-left">${log.namaBarang}</td>
-                            <td class="px-2 py-2 text-right text-gray-600 border-r border-gray-200">${formatRupiah(totalEnpTab1)}</td>
-                            <td class="px-2 py-2 text-right text-gray-500 border-r border-gray-200">${formatRupiah(totalUsulanAlokasiTab1)}</td>
-                            <td class="px-2 py-2 text-right text-amber-800 font-medium border-r border-gray-200 bg-amber-50/20">${formatRupiah(totalAlokasiMenjadiTab1)}</td>
+                            <td class="px-2 py-2 text-right text-gray-400 border-r border-gray-200 font-mono">${formatRupiah(0)}</td>
+                            <td class="px-2 py-2 text-right text-gray-400 border-r border-gray-200 font-mono">${formatRupiah(0)}</td>
+                            <td class="px-2 py-2 text-right text-amber-800 font-bold border-r border-gray-200 bg-amber-50/20 font-mono">${formatRupiah(totalAlokasiMenjadiTab1)}</td>
                             ${bHtml}
                             <td class="px-2 py-2 text-right font-mono text-teal-950 border-r border-gray-200 bg-teal-50/20">${formatRupiah(hargaSatuanFinal)}</td>
-                            <td class="px-2 py-2 text-right font-mono text-gray-800 bg-amber-50/10">${formatRupiah(totalRencanaRealisasiBaris)}</td>
+                            <td class="px-2 py-2 text-right font-mono text-gray-800 bg-amber-50/10 font-bold">${formatRupiah(totalRencanaRealisasiBaris)}</td>
                         `;
                         subEntityRowsBuffer.push(tr);
                     });
 
-                    // ID Unik untuk Expand/Collapse Sub Entity
                     const subToggleId = `sub_${wilayahKey}_${subEntityKey.replace(/\s+/g, '_')}`;
                     if (toggleStateSummary[subToggleId] === undefined) toggleStateSummary[subToggleId] = true;
 
-                    // PERBAIKAN POIN 2 & 3: Sub-Total Sub Entity diletakkan di ATAS baris rincian data + Tombol Expand
                     const trSubEntityTotal = document.createElement('tr');
                     trSubEntityTotal.className = `bg-amber-50/70 text-amber-950 border-b border-amber-200/80 font-semibold text-center collapsible-row child-of-${wilToggleId}`;
                     if (!toggleStateSummary[wilToggleId]) trSubEntityTotal.classList.add('hidden');
@@ -670,26 +837,22 @@
                         <td class="px-2 py-1.5 text-amber-900 font-bold text-left cursor-pointer select-none hover:text-amber-700" onclick="toggleSummaryRow('${subToggleId}')" colspan="2">
                             <span class="font-mono text-xs">${iconSub}</span>Sub-Total Unit: ${subEntityKey}
                         </td>
-                        <td class="px-2 py-1.5 text-right border-r border-amber-100">${formatRupiah(subTotalENP)}</td>
-                        <td class="px-2 py-1.5 text-right border-r border-amber-100">${formatRupiah(subTotalUsulanAlokasi)}</td>
-                        <td class="px-2 py-1.5 text-right border-r border-amber-200 bg-amber-100/20 tracking-wide">${formatRupiah(subTotalAlokasiMenjadi)}</td>
+                        <td class="px-2 py-1.5 text-right border-r border-amber-100 text-gray-400 font-mono">${formatRupiah(subTotalENP)}</td>
+                        <td class="px-2 py-1.5 text-right border-r border-amber-100 text-gray-400 font-mono">${formatRupiah(subTotalUsulanAlokasi)}</td>
+                        <td class="px-2 py-1.5 text-right border-r border-amber-200 bg-amber-100/20 font-bold text-amber-900 font-mono">${formatRupiah(subTotalAlokasiMenjadi)}</td>
                         ${subEntityBulanHtml}
                         <td class="px-2 py-1.5 text-center text-[10px] text-gray-400 font-normal border-r border-amber-100"> -- </td>
                         <td class="px-2 py-1.5 text-right font-mono font-bold text-amber-900 bg-amber-100/30">${formatRupiah(subTotalRealisasiDana)}</td>
                     `;
 
-                    // Push Sub-Total Unit terlebih dahulu ke buffer wilayah
                     rowsBuffer.push(trSubEntityTotal);
                     
-                    // Sembunyikan anak jika bapak unitnya di-collapse
                     if (!toggleStateSummary[subToggleId]) {
                         subEntityRowsBuffer.forEach(r => r.classList.add('hidden'));
                     }
-                    // Gabungkan rincian data di bawah Sub-Total Unit
                     rowsBuffer = rowsBuffer.concat(subEntityRowsBuffer);
                 });
 
-                // PERBAIKAN POIN 2 & 3: Total Besar Wilayah diletakkan di ATAS rincian Wilayah + Tombol Expand
                 const trWilayahTotal = document.createElement('tr');
                 trWilayahTotal.className = "bg-teal-700 font-bold text-white border-b border-teal-800 text-center sticky z-5";
                 
@@ -703,27 +866,27 @@
                     <td class="px-2 py-2 font-mono uppercase tracking-wider bg-teal-800 text-center cursor-pointer select-none hover:bg-teal-900" onclick="toggleSummaryRow('${wilToggleId}')" colspan="2">
                         <span class="font-mono text-xs">${iconWil}</span>Sub Total Wilayah
                     </td>
-                    <td class="px-2 py-2 font-bold text-teal-100 text-left">ALL ${wilayahKey}</td>
-                    <td class="px-2 py-2 text-right border-r border-teal-600/40">${formatRupiah(wilTotalENP)}</td>
-                    <td class="px-2 py-2 text-right border-r border-teal-600/40">${formatRupiah(wilTotalUsulanAlokasi)}</td>
-                    <td class="px-2 py-2 text-right border-r border-teal-600/40 text-amber-200 bg-teal-800/40">${formatRupiah(wilTotalAlokasiMenjadi)}</td>
+                    <td class="px-2 py-2 font-bold text-teal-100 text-left">ALL ${wilayahKey} ${isWilayahLocked(wilayahKey) ? '🔒 (LOCKED)' : ''}</td>
+                    <td class="px-2 py-2 text-right border-r border-teal-600/40 font-mono">${formatRupiah(wilTotalENP)}</td>
+                    <td class="px-2 py-2 text-right border-r border-teal-600/40 font-mono">${formatRupiah(wilTotalUsulanAlokasi)}</td>
+                    <td class="px-2 py-2 text-right border-r border-teal-600/40 text-amber-200 bg-teal-800/40 font-bold font-mono">${formatRupiah(wilTotalAlokasiMenjadi)}</td>
                     ${wilBulanHtml}
                     <td class="px-2 py-2 text-center text-[10px] text-teal-200 font-normal border-r border-teal-600/40">Σ Sebaran</td>
                     <td class="px-2 py-2 text-right font-mono font-bold text-amber-200 bg-teal-900/60">${formatRupiah(wilTotalRealisasiDana)}</td>
                 `;
 
-                // Cetak Total Wilayah paling atas, baru rincian di bawahnya
                 tbody.appendChild(trWilayahTotal);
                 rowsBuffer.forEach(rowElement => {
                     tbody.appendChild(rowElement);
                 });
             });
 
-            // Sinkronisasi Box Overview Atas
+            // 3. Kalkulasi Ulang Box Ringkasan Atas secara sinkron dengan TAB 1
             let totalMaksimumPaguENP = 0;
             globalDatabaseBarang.forEach(item => {
                 const entitas = (item.entitas || '-').trim().toUpperCase();
                 if (entitas === "W13") return;
+                
                 const matchEntity = (selectedEntity === "ALL" || entitas === selectedEntity.toUpperCase());
                 const matchBarang = (selectedBarang === "ALL" || (item.nama_barang || '').trim().toUpperCase() === selectedBarang.toUpperCase());
                 
@@ -736,21 +899,23 @@
             document.getElementById('sumTotalAlokasi').textContent = formatRupiah(grandTotalRealisasi);
         }
 
-        // Fungsi Handler Expand / Collapse Dinamis
         function toggleSummaryRow(toggleId) {
             toggleStateSummary[toggleId] = !toggleStateSummary[toggleId];
-            // Render ulang tabel untuk mengaplikasikan state visibilitas terbaru tanpa fetch server ulang
             renderSummaryBreakdown();
         }
 
         function triggerEditFromLog(namaBarang, wilayahParent) {
+            if(isWilayahLocked(wilayahParent)){
+                alert(`❌ Akses Ditolak! Wilayah ${wilayahParent} telah melakukan konfirmasi lembar kerja & mengunci data.`);
+                return;
+            }
             const idxMaster = globalDatabaseBarang.findIndex(item => 
                 (item.nama_barang || '').trim().toUpperCase() === namaBarang.trim().toUpperCase() && 
                 (item.entitas || '').trim().toUpperCase() === wilayahParent.trim().toUpperCase()
             );
 
             if (idxMaster !== -1) {
-                alert(`Sistem mendeteksi rincian breakdown yang sudah ada.\n\nKlik OK untuk membuka formulir revisi.`);
+                alert(`Sistem mendeteksi rincian breakdown yang sudah ada.\n\nKlik OK untuk membuka formulir revision.`);
                 openModal(idxMaster);
                 
                 const container = document.getElementById('breakdownRowsContainer');
@@ -829,12 +994,20 @@
             const itemTerpilih = globalDatabaseBarang[indexBaris];
             if (!itemTerpilih) return;
 
+            const entitas = (itemTerpilih.entitas || "W01").trim().toUpperCase();
+            if(isWilayahLocked(entitas)) {
+                alert(`❌ Data Dikunci! Wilayah ${entitas} sudah memfinalisasi lembar konfirmasi.`);
+                return;
+            }
+
             const nama = itemTerpilih.nama_barang || "-";
             const maxQty = parseInt(itemTerpilih.quantity) || 0;
-            const entitas = (itemTerpilih.entitas || "W01").trim().toUpperCase();
             
+            // PERBAIKAN: Selalu ambil harga segar langsung dari master data (LIST PERABOTAN)
             currentItemPrice = cleanNumber(itemTerpilih.price);
-            currentItemAlokasiENP = cleanNumber(itemTerpilih.enp) || (maxQty * currentItemPrice);
+            
+            // Hitung ulang plafon ENP berdasarkan Qty Plafon dikali Harga Baru yang diubah
+            currentItemAlokasiENP = maxQty * currentItemPrice;
 
             document.getElementById('modalHargaSatuan').textContent = formatRupiah(currentItemPrice);
             openBreakdownModal(nama, maxQty, entitas);
@@ -868,7 +1041,22 @@
             const container = document.getElementById('breakdownRowsContainer');
             container.innerHTML = "";
             
-            addNewBreakdownRow(); 
+            // Cek apakah data log breakdown sudah ada sebelumnya untuk barang & wilayah ini
+            const matchingLogs = globalLogBreakdown.filter(l => 
+                l.namaBarang.trim().toUpperCase() === namaBarang.trim().toUpperCase() && 
+                l.wilayahParent.trim().toUpperCase() === kodeWilayah.toUpperCase()
+            );
+
+            // Jika ada data lama, panggil mode edit otomatis
+            if (matchingLogs.length > 0) {
+                matchingLogs.forEach(l => {
+                    addNewBreakdownRowWithData(l);
+                });
+            } else {
+                // Jika benar-benar baru, buat baris kosong biasa
+                addNewBreakdownRow(); 
+            }
+            
             document.getElementById('breakdownModal').classList.remove('hidden');
         }
 
@@ -898,6 +1086,7 @@
             tr.id = rowId;
             tr.className = "breakdown-item-row border-b border-gray-100 hover:bg-gray-50/80 transition-colors";
             
+            // PERBAIKAN: Input otomatis memakai harga master yang baru diganti
             const formattedDefaultPrice = new Intl.NumberFormat("id-ID").format(currentItemPrice);
 
             let rowContent = `
@@ -963,8 +1152,17 @@
             }
         }
 
+        // =========================================================================
+        // TAMBAHAN: FUNGSI UNTUK MENANGANI SUBMIT INPUT BREAKDOWN DARI TAB 1 / MODAL
+        // =========================================================================
         async function handleSubmit(e) {
-            e.preventDefault();
+            e.preventDefault(); // Mencegah reload halaman
+            
+            if(isWilayahLocked(currentSelectedWilayah)){
+                alert("❌ Gagal! Wilayah ini telah terkunci.");
+                return;
+            }
+
             const namaBarang = document.getElementById('modalNamaBarang').textContent;
             const container = document.getElementById('breakdownRowsContainer');
             const rows = container.getElementsByClassName('breakdown-item-row');
@@ -979,7 +1177,7 @@
                 const hargaFinalBaris = parseInt(rawPrice) || 0;
                 
                 if (!subEntity) {
-                    alert("Harap pilih Sub Entity / Cabang untuk semua baris!");
+                    alert("⚠️ Harap pilih Sub Entity / Cabang untuk semua baris!");
                     return;
                 }
 
@@ -1002,6 +1200,7 @@
                 });
             }
 
+            // Validasi Budget Plafon Wilayah
             if (totalENPInput > currentItemAlokasiENP) {
                 alert(`❌ GAGAL AJUKAN BREAKDOWN (OVERBUDGET)!\n\nTotal Rencana Realisasi sebesar ${formatRupiah(totalENPInput)} melebihi batas anggaran plafon wilayah sebesar ${formatRupiah(currentItemAlokasiENP)}.\n\nSilakan kurangi sebaran kuantiti bulanan atau sesuaikan harga final Anda.`);
                 return; 
@@ -1018,158 +1217,473 @@
             document.getElementById('loading').classList.remove('hidden');
 
             try {
-                await fetch(API_URL, {
+                // Menggunakan 'text/plain' untuk menghindari preflight CORS issue pada Google Apps Script
+                const response = await fetch(API_URL, {
                     method: 'POST',
-                    mode: 'no-cors', 
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     body: JSON.stringify(finalPayload)
                 });
-                alert("Semua data breakdown berhasil diajukan!");
+                
+                alert("🎉 Semua data breakdown berhasil diajukan!");
                 document.getElementById('breakdownForm').reset();
-                await fetchAllDataFromServer();
+                
+                // Beri jeda 1.5 detik agar Apps Script selesai menulis di Google Sheets sebelum ditarik ulang data terbarunya
+                setTimeout(async () => {
+                    await fetchAllDataFromServer();
+                }, 1500);
+
             } catch (error) {
-                console.error(error);
-                alert("Proses simpan gagal.");
+                console.error("Detail error submit:", error);
+                alert("Proses simpan gagal ke database pusat.");
             } finally {
                 document.getElementById('loading').classList.add('hidden');
             }
         }
 
-        function formatRupiah(angka) {
-            return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(angka);
+// =========================================================================
+        // TAMBAHAN: FUNGSI PENDUKUNG (UTILITY) YANG WAJIB ADA AGAR SCRIPT TIDAK CRASH
+        // =========================================================================
+        
+        function closeModal() {
+            document.getElementById('breakdownModal').classList.add('hidden');
+            document.getElementById('breakdownForm').reset();
         }
 
-        function cleanNumber(value) {
-            if (!value) return 0;
-            if (typeof value === 'number') return value;
-            let clean = value.toString().replace(/[^0-9,-]/g, '').replace(',', '.');
-            return parseFloat(clean) || 0;
+        function cleanNumber(val) {
+            if (!val) return 0;
+            if (typeof val === 'number') return val;
+            let str = val.toString().replace(/[^0-9,-]/g, "");
+            let num = parseInt(str);
+            return isNaN(num) ? 0 : num;
+        }
+
+        function formatRupiah(angka) {
+            return "Rp" + new Intl.NumberFormat("id-ID").format(angka);
         }
 
         function populateFilterBarangDropdown() {
             const filterBarangSelect = document.getElementById('filterBarang');
+            const previousValue = filterBarangSelect.value;
             filterBarangSelect.innerHTML = '<option value="ALL">-- Semua Nama Barang --</option>';
+            
             let setBarangUnik = new Set();
-
             globalDatabaseBarang.forEach(item => {
-                if(item.nama_barang) setBarangUnik.add(item.nama_barang.trim());
+                if (item.nama_barang) setBarangUnik.add(item.nama_barang.trim());
             });
 
-            setBarangUnik.forEach(namaBarang => {
+            Array.from(setBarangUnik).sort().forEach(barang => {
                 let opt = document.createElement('option');
-                opt.value = namaBarang;
-                opt.textContent = namaBarang;
+                opt.value = barang;
+                opt.textContent = barang;
+                if (barang === previousValue) opt.selected = true;
                 filterBarangSelect.appendChild(opt);
             });
         }
 
         function applyFilters() {
-            if (currentActiveTab === "monitoring") {
+            // Pengaman agar tidak memproses jika data belum siap
+            if (!globalDatabaseBarang || globalDatabaseBarang.length === 0) return;
+
+            if (currentActiveTab === "acuan") {
+                renderAcuanTable();
+            } else if (currentActiveTab === "monitoring") {
                 renderMonitoringLog();
             } else if (currentActiveTab === "summary") {
                 renderSummaryBreakdown();
-            } else {
-                renderPlafonTabAcuan();
             }
         }
 
-        function renderPlafonTabAcuan() {
-            const selectedEntity = document.getElementById('filterEntity').value;
-            const selectedBarang = document.getElementById('filterBarang').value;
+        function renderAcuanTable() {
             const tbody = document.getElementById('databaseAcuanBody');
-            
-            if (tbody) tbody.innerHTML = "";
+            tbody.innerHTML = "";
 
-            let akumulasiENP = 0;
-            let akumulasiAlokasiMenjadi = 0;
+            const selectedEntity = document.getElementById('filterEntity').value.trim().toUpperCase();
+            const selectedBarang = document.getElementById('filterBarang').value.trim().toUpperCase();
+
+            let totalPaguMaks = 0;
+            let totalUsulanAwal = 0;
+            let totalUsulanRevisi = 0;
+            let nomorUrut = 1; // Counter nomor urut
 
             globalDatabaseBarang.forEach((item, index) => {
-                const entitas = (item.entitas || '-').trim().toUpperCase();
+                const entitas = (item.entitas || item.ENTITAS || '-').toString().trim().toUpperCase();
                 if (entitas === "W13") return; 
+
+                const nama = (item.nama_barang || '').toString().trim();
                 
-                const nama = item.nama_barang || '';
-                const qty = cleanNumber(item.quantity);
-                const harga = cleanNumber(item.price);
-                const enp = cleanNumber(item.enp) || (qty * harga);
-                let alokasiPlafon = cleanNumber(item.alokasi); 
-
-                if (!nama) return;
-
-                const matchEntity = (selectedEntity === "ALL" || entitas === selectedEntity.toUpperCase());
-                const matchBarang = (selectedBarang === "ALL" || nama.trim().toUpperCase() === selectedBarang.toUpperCase());
+                const matchEntity = (selectedEntity === "ALL" || entitas === selectedEntity);
+                const matchBarang = (selectedBarang === "ALL" || nama.toUpperCase() === selectedBarang);
 
                 if (matchEntity && matchBarang) {
-                    const matchingLogs = globalLogBreakdown.filter(log => 
-                        log.namaBarang.trim().toUpperCase() === nama.trim().toUpperCase() && 
-                        log.wilayahParent.trim().toUpperCase() === entitas
-                    );
+                    const hargaMasterTerbaru = cleanNumber(item.price);
+                    const qtyPlafon = cleanNumber(item.quantity);
+                    
+                    const enp = qtyPlafon * hargaMasterTerbaru;
+                    const alokasiAwal = cleanNumber(item.alokasi) || 0;
 
-                    let nominalTelahBreakdown = 0;
-                    matchingLogs.forEach(log => {
-                        const hargaLog = log.hargaFinal ? cleanNumber(log.hargaFinal) : harga;
-                        nominalTelahBreakdown += (parseInt(log.quantity) || 0) * hargaLog;
-                    });
+                    const totalRealisasiInputan = globalLogBreakdown
+                        .filter(l => {
+                            const logNama = (l.namaBarang || '').toString().trim().toUpperCase();
+                            const logWilayah = (l.wilayahParent || '').toString().trim().toUpperCase();
+                            return logNama === nama.toUpperCase() && logWilayah === entitas;
+                        })
+                        .reduce((sum, log) => {
+                            let qtyLog = 0;
+                            for(let m=1; m<=12; m++) qtyLog += (parseInt(log.detailBulan['bulan_'+m]) || 0);
+                            let hargaBarisLog = cleanNumber(log.hargaFinal) || hargaMasterTerbaru;
+                            return sum + (qtyLog * hargaBarisLog);
+                        }, 0);
 
-                    akumulasiENP += enp;
-                    akumulasiAlokasiMenjadi += nominalTelahBreakdown;
+                    totalPaguMaks += enp;
+                    totalUsulanAwal += alokasiAwal;
+                    totalUsulanRevisi += totalRealisasiInputan;
 
-                    if (tbody) {
-                        const tr = document.createElement('tr');
-                        tr.className = "hover:bg-teal-50 transition-colors border-b border-gray-100";
-                        tr.setAttribute('onclick', `openModal(${index})`);
-                        tr.innerHTML = `
-                            <td class="px-3 py-2.5 font-medium text-gray-900">${nama}</td>
-                            <td class="px-3 py-2.5 text-center font-bold text-teal-600">${qty}</td>
-                            <td class="px-3 py-2.5 text-right text-gray-600">${formatRupiah(harga)}</td>
-                            <td class="px-3 py-2.5 text-right font-semibold text-gray-700">${formatRupiah(enp)}</td>
-                            <td class="px-3 py-2.5 text-right font-semibold text-gray-500">${formatRupiah(alokasiPlafon)}</td>
-                            <td class="px-3 py-2.5 text-right font-bold text-amber-700 bg-teal-50/40">${formatRupiah(nominalTelahBreakdown)}</td>
-                            <td class="px-3 py-2.5 text-center"><span class="px-2 py-0.5 bg-teal-100 text-teal-800 rounded text-xs font-mono font-bold">${entitas}</span></td>
-                        `;
-                        tbody.appendChild(tr);
-                    }
+                    const tr = document.createElement('tr');
+                    tr.className = "hover:bg-teal-50/60 transition-colors border-b border-gray-100 align-middle";
+
+                    // FIX 2 & 3: PENERAPAN NOMOR URUT DAN KELURUSAN FONT MONOSPACE ANGKA
+                    tr.innerHTML = `
+                        <td class="px-2 py-2.5 text-center font-mono text-xs text-gray-400 font-medium bg-gray-50/30">${nomorUrut++}</td>
+                        <td class="px-3 py-2.5 text-left font-medium text-gray-900 tracking-tight">${nama} ${isWilayahLocked(entitas) ? '🔒' : ''}</td>
+                        <td class="px-3 py-2.5 text-center font-mono font-semibold text-gray-600">${qtyPlafon}</td>
+                        <td class="px-3 py-2.5 text-right font-mono text-gray-700">${formatRupiah(hargaMasterTerbaru)}</td>
+                        <td class="px-3 py-2.5 text-right font-mono text-gray-600">${formatRupiah(enp)}</td>
+                        <td class="px-3 py-2.5 text-right font-mono text-gray-500">${formatRupiah(alokasiAwal)}</td>
+                        <td class="px-3 py-2.5 text-right font-mono font-bold bg-teal-50/40 text-teal-950">${formatRupiah(totalRealisasiInputan)}</td>
+                        <td class="px-3 py-2.5 text-center font-mono font-bold text-teal-800">${entitas}</td>
+                        <td class="px-3 py-2.5 flex justify-center items-center gap-1.5">
+                            <button onclick="openModal(${index})" class="px-2.5 py-1 bg-teal-700 hover:bg-teal-900 text-white font-bold rounded text-[11px] transition shadow-sm cursor-pointer">
+                                📝 Breakdown
+                            </button>
+                            <button onclick="editMasterPriceDirectly('${nama}', '${entitas}', ${hargaMasterTerbaru})" class="px-2 py-1 bg-gray-100 hover:bg-amber-600 hover:text-white text-gray-600 rounded text-[11px] font-medium transition border border-gray-300 cursor-pointer">
+                                ✏️ Edit
+                            </button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
                 }
             });
 
-            document.getElementById('sumTotalENP').textContent = formatRupiah(akumulasiENP);
-            document.getElementById('sumTotalAlokasi').textContent = formatRupiah(akumulasiAlokasiMenjadi);
+            document.getElementById('sumTotalENP').textContent = formatRupiah(totalPaguMaks);
+            document.getElementById('sumTotalAlokasi').textContent = formatRupiah(totalUsulanRevisi);
         }
 
-        function closeModal() {
-            document.getElementById('breakdownModal').classList.add('hidden');
-        }
+        async function editMasterPriceDirectly(namaBarang, wilayahParent, hargaSekarang) {
+            const nppVerifikator = prompt("🔒 Fitur Terproteksi!\n\nSilakan masukkan Password Admin untuk melakukan perubahan harga master:");
+            if (nppVerifikator !== "Bni52099!") { 
+                alert("❌ Akses Ditolak!");
+                return;
+            }
 
-        async function triggerDeleteRowLog(namaBarang, wilayahParent, subEntity) {
-            if (!confirm(`Apakah Anda yakin ingin menghapus data breakdown untuk:\nUnit: ${subEntity}\nBarang: ${namaBarang}?\n\nData pada Database akan dihapus.`)) {
+            const inputHargaBaru = prompt(`Mengubah harga master untuk:\n👉 ${namaBarang} (${wilayahParent})\n\nHarga saat ini: ${formatRupiah(hargaSekarang)}\n\nMasukkan nominal harga baru:`);
+            if (inputHargaBaru === null) return;
+            const hargaBaruClean = parseInt(inputHargaBaru.replace(/[^0-9]/g, "")) || 0;
+
+            if (hargaBaruClean <= 0) {
+                alert("⚠️ Nominal tidak valid!");
                 return;
             }
 
             document.getElementById('loading').classList.remove('hidden');
-
-            const deletePayload = {
-                action: "deleteSingleBreakdownLog",
-                namaBarang: namaBarang,
-                wilayahParent: wilayahParent,
-                subEntity: subEntity
-            };
-
             try {
-                await fetch(API_URL, {
+                const response = await fetch(API_URL, {
                     method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(deletePayload)
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        action: "updateMasterPrice",
+                        namaBarang: namaBarang,
+                        wilayahParent: wilayahParent,
+                        hargaBaru: hargaBaruClean
+                    })
                 });
 
-                alert("Request hapus berhasil dikirim! Sinkronisasi database pusat...");
-                await fetchAllDataFromServer(); 
-            } catch (error) {
-                console.error(error);
-                alert("Proses hapus gagal di sisi server.");
+                const res = JSON.parse(await response.text());
+                if (res.error) {
+                    alert("❌ Gagal: " + res.error);
+                } else {
+                    alert("🎉 Sukses! Harga master di database Google Sheets telah berhasil diperbarui.");
+                    await fetchAllDataFromServer();
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Terjadi gangguan koneksi.");
             } finally {
                 document.getElementById('loading').classList.add('hidden');
             }
         }
+
+        // =========================================================================
+        // REVISI SELESAI: FUNGSI BULK UPLOAD DENGAN STRIPPER KARAKTER TERSEMBUNYI
+        // =========================================================================
+        function handleBulkCSVUpload() {
+            const fileInput = document.getElementById('csvBulkFile');
+            if (fileInput.files.length === 0) {
+                alert("⚠️ Harap pilih file CSV terlebih dahulu!");
+                return;
+            }
+
+            const adminCheck = prompt("🔒 Otoritas Khusus Bulk Upload!\nMasukkan Password Admin untuk melanjutkan eksekusi file:");
+            if (adminCheck !== "12345") { 
+                alert("❌ Akses Ditolak!");
+                return;
+            }
+
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+
+            reader.onload = async function (e) {
+                const text = e.target.result;
+                
+                // Pisahkan baris dengan aman mendeteksi carriage return Windows (\r\n)
+                const lines = text.split(/\r\n|\n|\r/); 
+                const finalDataRows = [];
+
+                if (lines.length < 2) {
+                    alert("⚠️ File CSV kosong atau tidak memiliki baris data.");
+                    return;
+                }
+
+                // Ambil header dan bersihkan karakter pembanding
+                const headers = lines[0].split(/[,;]/).map(h => h.replace(/["\r]/g, "").trim().toLowerCase());
+                
+                const idxNama = headers.indexOf("nama_barang");
+                const idxQty = headers.indexOf("quantity");
+                const idxHarga = headers.indexOf("price");
+                const idxEntitas = headers.indexOf("entitas");
+                const idxAlokasi = headers.indexOf("alokasi");
+
+                if (idxNama === -1 || idxQty === -1 || idxHarga === -1 || idxEntitas === -1) {
+                    alert("❌ Gagal! Format Header CSV salah.\n\nStandard wajib: nama_barang,quantity,price,entitas,alokasi");
+                    return;
+                }
+
+                for (let i = 1; i < lines.length; i++) {
+                    const currentLine = lines[i].trim();
+                    if (!currentLine) continue; 
+                    
+                    const columns = currentLine.split(/[,;]/); 
+                    
+                    if (columns.length > Math.max(idxNama, idxQty, idxHarga, idxEntitas)) {
+                        // Bersihkan spasi gaib dan tanda kutip dua sisa parsing dari string Excel
+                        const namaBarangClean = columns[idxNama].replace(/^["']|["']$/g, "").trim();
+                        const entitasClean = columns[idxEntitas].replace(/^["']|["']$/g, "").trim().toUpperCase();
+                        
+                        const qtyClean = parseInt(columns[idxQty].toString().replace(/[^0-9]/g, "")) || 0;
+                        const priceClean = parseInt(columns[idxHarga].toString().replace(/[^0-9]/g, "")) || 0;
+                        const alokasiClean = idxAlokasi !== -1 ? (parseInt(columns[idxAlokasi].toString().replace(/[^0-9]/g, "")) || 0) : 0;
+
+                        if (namaBarangClean && entitasClean) {
+                            finalDataRows.push({
+                                nama_barang: namaBarangClean,
+                                quantity: qtyClean,
+                                price: priceClean,
+                                entitas: entitasClean,
+                                alokasi: alokasiClean
+                            });
+                        }
+                    }
+                }
+
+                if (finalDataRows.length === 0) {
+                    alert("⚠️ Tidak ada baris data valid yang berhasil diekstrak.");
+                    return;
+                }
+
+                document.getElementById('loading').classList.remove('hidden');
+
+                try {
+                    const response = await fetch(API_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                        body: JSON.stringify({
+                            action: "bulkUploadMaster",
+                            dataRows: finalDataRows
+                        })
+                    });
+
+                    const res = JSON.parse(await response.text());
+                    if (res.error) {
+                        alert("❌ Error dari Server Backend: " + res.error);
+                    } else {
+                        alert(`🎉 Sukses! Sebanyak ${finalDataRows.length} baris data CSV berhasil dikirim dan di-record ke database Google Sheets.`);
+                        fileInput.value = ""; 
+                        await fetchAllDataFromServer(); 
+                    }
+                } catch (err) {
+                    console.error(err);
+                    alert("Terjadi kegagalan komunikasi data saat menulis ke Google Sheets.");
+                } finally {
+                    document.getElementById('loading').classList.add('hidden');
+                }
+            };
+            
+            reader.readAsText(file);
+        }
+
+        // =========================================================================
+        // MANAJEMEN TAB LEMBAR KONFIRMASI (TAB 4)
+        // =========================================================================
+        function generateCheckboxWilayahKonfirmasi() {
+            const container = document.getElementById('checkboxWilayahContainer');
+            container.innerHTML = "";
+            for (let i = 1; i <= 18; i++) {
+                if (i === 13) continue;
+                let code = "W" + String(i).padStart(2, '0');
+                
+                let label = document.createElement('label');
+                label.className = "flex items-center gap-1.5 p-2 bg-white rounded border border-gray-200 cursor-pointer hover:bg-teal-50 select-none";
+                
+                let isLocked = isWilayahLocked(code);
+                let lockIcon = isLocked ? "🔒 " : "";
+
+                label.innerHTML = `
+                    <input type="checkbox" value="${code}" class="chk-wilayah-confirm w-3.5 h-3.5 text-teal-600 border-gray-300 rounded focus:ring-teal-500" onchange="renderLembarKonfirmasi()">
+                    <span class="${isLocked ? 'text-red-600 font-bold' : 'text-gray-700'}">${lockIcon}${code}</span>
+                `;
+                container.appendChild(label);
+            }
+        }
+
+        // =========================================================================
+        // FIX: PINDAH POSISI KOLOM RENCANA REALISASI AKTUAL SETELAH REVISI RBB
+        // =========================================================================
+        function renderLembarKonfirmasi() {
+            const tbody = document.getElementById('tableConfirmationSummaryBody');
+            tbody.innerHTML = "";
+
+            const checkboxes = document.querySelectorAll('.chk-wilayah-confirm:checked');
+            if (checkboxes.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="py-4 text-gray-400 italic text-center">Silakan centang wilayah di atas terlebih dahulu.</td></tr>`;
+                toggleSubmitConfirmBtn();
+                return;
+            }
+
+            checkboxes.forEach(chk => {
+                const wil = chk.value.toString().trim().toUpperCase();
+                let totalPaguMaks = 0;
+                
+                globalDatabaseBarang.forEach(item => {
+                    if ((item.entitas || '').toString().trim().toUpperCase() === wil) {
+                        const qty = cleanNumber(item.quantity);
+                        const harga = cleanNumber(item.price);
+                        totalPaguMaks += cleanNumber(item.enp) || (qty * harga);
+                    }
+                });
+
+                const totalRencanaRealisasiAktual = globalLogBreakdown
+                    .filter(l => (l.wilayahParent || '').toString().trim().toUpperCase() === wil)
+                    .reduce((sum, log) => {
+                        let qtyLog = 0;
+                        const itemMaster = globalDatabaseBarang.find(m => 
+                            m.nama_barang.trim().toUpperCase() === log.namaBarang.trim().toUpperCase() && 
+                            m.entitas.trim().toUpperCase() === wil
+                        );
+                        
+                        for (let m = 1; m <= 12; m++) {
+                            qtyLog += (parseInt(log.detailBulan['bulan_' + m]) || 0);
+                        }
+                        
+                        const hargaBarisLog = cleanNumber(log.hargaFinal) || (itemMaster ? cleanNumber(itemMaster.price) : 0);
+                        return sum + (qtyLog * hargaBarisLog);
+                    }, 0);
+
+                const totalRevisisRBB = totalRencanaRealisasiAktual;
+
+                let isLocked = isWilayahLocked(wil);
+                let statusHtml = isLocked 
+                    ? `<span class="text-red-700 font-bold bg-red-50 px-2 py-0.5 rounded border border-red-200 text-[11px]">🔒 Lengkap & Terkonfirmasi</span>`
+                    : `<span class="text-amber-700 font-medium bg-amber-50 px-2 py-0.5 rounded border border-amber-200 text-[11px]">⏳ Belum Konfirmasi</span>`;
+
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-gray-50/80 transition-colors align-middle";
+                
+                // URUTAN TD DISESUAIKAN BERIKUT DENGAN PELETAKAN BACKGROUND WARNA TEAL PADA KOLOM REVISI AKTUAL
+                tr.innerHTML = `
+                    <td class="px-3 py-2.5 text-left font-mono font-bold text-teal-900 bg-gray-50/20">${wil}</td>
+                    <td class="px-3 py-2.5 text-right font-mono text-gray-600">${formatRupiah(totalPaguMaks)}</td>
+                    <td class="px-3 py-2.5 text-right font-mono font-semibold text-gray-700">${formatRupiah(totalRevisisRBB)}</td>
+                    <td class="px-3 py-2.5 text-right font-mono font-bold text-teal-950 bg-teal-50/40">${formatRupiah(totalRencanaRealisasiAktual)}</td>
+                    <td class="px-3 py-2.5 text-center">${statusHtml}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            toggleSubmitConfirmBtn();
+        }
+
+        function toggleSubmitConfirmBtn() {
+            const checkPernyataan = document.getElementById('checkPernyataan').checked;
+            const checkboxes = document.querySelectorAll('.chk-wilayah-confirm:checked');
+            const btn = document.getElementById('btnKirimKonfirmasi');
+
+            let adaWilayahTerbuka = false;
+            checkboxes.forEach(chk => {
+                if (!isWilayahLocked(chk.value)) adaWilayahTerbuka = true;
+            });
+
+            if (checkPernyataan && checkboxes.length > 0 && adaWilayahTerbuka) {
+                btn.disabled = false;
+                btn.className = "px-6 py-2.5 bg-amber-600 hover:bg-amber-700 text-white font-bold text-sm rounded-lg transition shadow-md cursor-pointer";
+            } else {
+                btn.disabled = true;
+                btn.className = "px-6 py-2.5 bg-gray-300 text-gray-500 cursor-not-allowed font-bold text-sm rounded-lg transition shadow-md";
+            }
+        }
+
+        async function submitConfirmationWilayah() {
+            const checkboxes = document.querySelectorAll('.chk-wilayah-confirm:checked');
+            const nama = document.getElementById('confirmNama').value.trim();
+            const npp = document.getElementById('confirmNpp').value.trim();
+            const jabatan = document.getElementById('confirmJabatan').value.trim();
+
+            if (!nama || !npp || !jabatan) {
+                alert("⚠️ Harap lengkapi informasi Nama, NPP, dan Jabatan Verifikator terlebih dahulu!");
+                return;
+            }
+
+            let arrWilayah = [];
+            checkboxes.forEach(chk => {
+                if (!isWilayahLocked(chk.value)) arrWilayah.push(chk.value);
+            });
+
+            if (arrWilayah.length === 0) {
+                alert("Semua wilayah yang Anda pilih sudah berstatus terkunci.");
+                return;
+            }
+
+            if (!confirm(`⚠️ PERINGATAN KUNCI PERMANEN!\n\nApakah Anda yakin ingin MENGUNCI data untuk wilayah: ${arrWilayah.join(', ')}?\nSetelah dikunci, data distribusi wilayah tersebut TIDAK DAPAT diubah/dihapus kembali.`)) return;
+
+            document.getElementById('loading').classList.remove('hidden');
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        action: "submitConfirmation",
+                        arrWilayah: arrWilayah,
+                        nama: nama,
+                        npp: npp,
+                        jabatan: jabatan
+                    })
+                });
+
+                alert("🔒 Selamat! Konfirmasi berhasil dikirim dan lembar kerja wilayah resmi dikunci.");
+                document.getElementById('checkPernyataan').checked = false;
+                document.getElementById('confirmNama').value = "";
+                document.getElementById('confirmNpp').value = "";
+                document.getElementById('confirmJabatan').value = "";
+                
+                await fetchAllDataFromServer();
+                generateCheckboxWilayahKonfirmasi();
+                renderLembarKonfirmasi();
+            } catch (e) {
+                console.error(e);
+                alert("Gagal melakukan penguncian wilayah.");
+            } finally {
+                document.getElementById('loading').classList.add('hidden');
+            }
+        }
+
     </script>
 </body>
 </html>
