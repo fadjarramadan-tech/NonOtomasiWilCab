@@ -6,6 +6,10 @@
     <title>Form Breakdown Perabotan RBB 2026</title>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/html-to-image/1.11.11/html-to-image.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- Library untuk Export Excel & PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
     <style>
         .loader {
             border-top-color: #0d9488;
@@ -179,12 +183,21 @@
         </div>
     </div>
 
+    <!-- TAB 3: Ditambahkan Tombol Download Excel & PDF -->
     <div id="tabContentSummary" class="bg-white p-5 rounded-xl shadow-md border border-teal-100 flex flex-col hidden">
-        <div class="flex justify-between items-center mb-3">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3 gap-2">
             <h2 class="text-base font-bold text-teal-900">🗂️ Summary Breakdown Perabotan Non Otomasi (Dengan Sub-Total Wilayah & Unit)</h2>
+            <div class="flex gap-2">
+                <button onclick="downloadSummaryExcel()" class="px-3 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs rounded-lg transition shadow-sm flex items-center gap-1.5 cursor-pointer">
+                    📥 Excel (.xlsx)
+                </button>
+                <button onclick="downloadSummaryPDF()" class="px-3 py-1.5 bg-rose-700 hover:bg-rose-800 text-white font-bold text-xs rounded-lg transition shadow-sm flex items-center gap-1.5 cursor-pointer">
+                    📄 PDF (.pdf)
+                </button>
+            </div>
         </div>
         <div class="overflow-x-auto max-h-[550px]">
-            <table class="min-w-full divide-y divide-gray-200 text-[11px] text-center border-collapse">
+            <table id="summaryExcelTable" class="min-w-full divide-y divide-gray-200 text-[11px] text-center border-collapse">
                 <thead class="bg-teal-950 text-white sticky top-0 z-10 shadow-sm text-center">
                     <tr>
                         <th rowspan="2" class="px-2 py-3 text-center border-r border-teal-800">Wilayah</th>
@@ -192,7 +205,7 @@
                         <th rowspan="2" class="px-2 py-3 text-center border-r border-teal-800">Nama Barang</th>
                         <th colspan="3" class="bg-teal-900 p-1 border-b border-r border-teal-800 text-center font-bold">Usulan Anggaran</th>
                         <th colspan="12" class="bg-teal-800 p-1 border-b border-r border-teal-700 text-center font-normal text-[10px]">Rencana Realisasi Per Bulan</th>
-                        <th colspan="3" class="bg-amber-900 p-1 border-b text-center font-bold text-amber-100">Kombinasi Finansial Aktual</th>
+                        <th colspan="2" class="bg-amber-900 p-1 border-b text-center font-bold text-amber-100">Kombinasi Finansial Aktual</th>
                     </tr>
                     <tr>
                         <th class="px-2 py-2 text-center font-medium bg-teal-900/60 border-r border-teal-800 w-24">Total ENP cf. Persetujuan Dir. Sektor</th>
@@ -401,7 +414,7 @@
             if (tabName === 'acuan') {
                 tabAcuan.classList.remove('hidden');
                 btnAcuan.className = "px-4 py-2.5 font-bold text-xs md:text-sm rounded-t-xl transition-all bg-white text-teal-950 border-t border-x border-teal-200 -mb-[1px]";
-                sidebar.classList.remove('hidden'); // Tampilkan panduan di atas hanya di TAB 1
+                sidebar.classList.remove('hidden'); 
                 filterGrid.classList.remove('hidden');
                 applyFilters(); 
             } else if (tabName === 'konfirmasi') {
@@ -427,8 +440,6 @@
 
         async function fetchAllDataFromServer() {
             try {
-                // CACHE BUSTER: Menambahkan ?_=(timestamp) memaksa Google Web App & Browser 
-                // untuk mengabaikan cache dan membaca ulang data asli dari Google Sheets secara real-time.
                 const cacheBusterUrl = API_URL + (API_URL.includes('?') ? '&' : '?') + '_=' + Date.now();
                 
                 const response = await fetch(cacheBusterUrl);
@@ -477,10 +488,6 @@
             generateCheckboxWilayahKonfirmasi(); 
             document.getElementById('loading').classList.add('hidden');
 
-            // =========================================================================
-            // TAMBAHAN AUTOMATIC SINKRONISASI 2 ARAH (POLLING)
-            // Sistem akan otomatis menarik data segar dari Google Sheets setiap 2 menit (120000 ms)
-            // =========================================================================
             setInterval(async () => {
                 console.log("🔄 Sinkronisasi otomatis dengan Google Sheets...");
                 await fetchAllDataFromServer();
@@ -586,7 +593,6 @@
                 const rawHargaLog = log.hargaFinal || log.harga_final || log.HargaFinal || log.HARGAFINAL;
                 const hargaSatuanFinal = rawHargaLog ? cleanNumber(rawHargaLog) : (masterItem ? cleanNumber(masterItem.price) : 0);
                 
-                // Menghitung total quantity secara aktual dari sebaran sebaran bulanan
                 let qtyTotalBaris = 0;
                 let bHtml = "";
                 for(let m = 1; m <= 12; m++) {
@@ -595,7 +601,6 @@
                     bHtml += `<td class="p-1 font-mono text-gray-600 border-r border-gray-100">${valMo}</td>`;
                 }
 
-                // Kalkulasi Finansial Aktual Berdasarkan Input Realisasi Wilayah
                 const nilaiRupiahLog = qtyTotalBaris * hargaSatuanFinal;
                 totalRealisasiAlokasi += nilaiRupiahLog;
 
@@ -636,11 +641,7 @@
             document.getElementById('sumTotalAlokasi').textContent = formatRupiah(totalRealisasiAlokasi);
         }
 
-// =========================================================================
-        // FIX: FUNGSI UNTUK MENGHAPUS LOG BREAKDOWN SECARA AKURAT (ANTI-MACET)
-        // =========================================================================
         async function triggerDeleteRowLog(namaBarang, wilayahParent, subEntity) {
-            // Pastikan parameter dibersihkan dari spasi gaib sebelum pengecekan kunci
             const cleanWilayah = (wilayahParent || '').toString().trim().toUpperCase();
             const cleanNamaBarang = (namaBarang || '').toString().trim();
             const cleanSubEntity = (subEntity || '').toString().trim();
@@ -654,7 +655,6 @@
                 return;
             }
 
-            // Tampilkan layar loading
             document.getElementById('loading').classList.remove('hidden');
 
             try {
@@ -675,15 +675,12 @@
                     alert("❌ Gagal menghapus: " + res.error);
                 } else {
                     alert("🗑️ Baris log breakdown berhasil dibersihkan dari Google Sheets!");
-                    
-                    // Tarik data terbaru dari server backend untuk merefresh TAB 2 & TAB 3
                     await fetchAllDataFromServer();
                 }
             } catch (e) {
                 console.error("Detail Error Hapus:", e);
                 alert("Gagal terhubung ke database server saat mencoba menghapus.");
             } finally {
-                // Sembunyikan layar loading
                 document.getElementById('loading').classList.add('hidden');
             }
         }
@@ -729,7 +726,6 @@
             Object.keys(mapWilayah).sort().forEach(wilayahKey => {
                 let logsDiWilayah = mapWilayah[wilayahKey];
                 
-                // 1. Kalkulasi Akurat Data Master wilayah langsung dari database acuan TAB 1
                 let wilTotalENP = 0;
                 let wilTotalUsulanAlokasi = 0;
 
@@ -885,7 +881,6 @@
                 });
             });
 
-            // 3. Kalkulasi Ulang Box Ringkasan Atas secara sinkron dengan TAB 1
             let totalMaksimumPaguENP = 0;
             globalDatabaseBarang.forEach(item => {
                 const entitas = (item.entitas || '-').trim().toUpperCase();
@@ -1007,10 +1002,7 @@
             const nama = itemTerpilih.nama_barang || "-";
             const maxQty = parseInt(itemTerpilih.quantity) || 0;
             
-            // PERBAIKAN: Selalu ambil harga segar langsung dari master data (LIST PERABOTAN)
             currentItemPrice = cleanNumber(itemTerpilih.price);
-            
-            // Hitung ulang plafon ENP berdasarkan Qty Plafon dikali Harga Baru yang diubah
             currentItemAlokasiENP = maxQty * currentItemPrice;
 
             document.getElementById('modalHargaSatuan').textContent = formatRupiah(currentItemPrice);
@@ -1045,19 +1037,16 @@
             const container = document.getElementById('breakdownRowsContainer');
             container.innerHTML = "";
             
-            // Cek apakah data log breakdown sudah ada sebelumnya untuk barang & wilayah ini
             const matchingLogs = globalLogBreakdown.filter(l => 
                 l.namaBarang.trim().toUpperCase() === namaBarang.trim().toUpperCase() && 
                 l.wilayahParent.trim().toUpperCase() === kodeWilayah.toUpperCase()
             );
 
-            // Jika ada data lama, panggil mode edit otomatis
             if (matchingLogs.length > 0) {
                 matchingLogs.forEach(l => {
                     addNewBreakdownRowWithData(l);
                 });
             } else {
-                // Jika benar-benar baru, buat baris kosong biasa
                 addNewBreakdownRow(); 
             }
             
@@ -1090,7 +1079,6 @@
             tr.id = rowId;
             tr.className = "breakdown-item-row border-b border-gray-100 hover:bg-gray-50/80 transition-colors";
             
-            // PERBAIKAN: Input otomatis memakai harga master yang baru diganti
             const formattedDefaultPrice = new Intl.NumberFormat("id-ID").format(currentItemPrice);
 
             let rowContent = `
@@ -1156,11 +1144,8 @@
             }
         }
 
-        // =========================================================================
-        // TAMBAHAN: FUNGSI UNTUK MENANGANI SUBMIT INPUT BREAKDOWN DARI TAB 1 / MODAL
-        // =========================================================================
         async function handleSubmit(e) {
-            e.preventDefault(); // Mencegah reload halaman
+            e.preventDefault(); 
             
             if(isWilayahLocked(currentSelectedWilayah)){
                 alert("❌ Gagal! Wilayah ini telah terkunci.");
@@ -1204,7 +1189,6 @@
                 });
             }
 
-            // Validasi Budget Plafon Wilayah
             if (totalENPInput > currentItemAlokasiENP) {
                 alert(`❌ GAGAL AJUKAN BREAKDOWN (OVERBUDGET)!\n\nTotal Rencana Realisasi sebesar ${formatRupiah(totalENPInput)} melebihi batas anggaran plafon wilayah sebesar ${formatRupiah(currentItemAlokasiENP)}.\n\nSilakan kurangi sebaran kuantiti bulanan atau sesuaikan harga final Anda.`);
                 return; 
@@ -1221,7 +1205,6 @@
             document.getElementById('loading').classList.remove('hidden');
 
             try {
-                // Menggunakan 'text/plain' untuk menghindari preflight CORS issue pada Google Apps Script
                 const response = await fetch(API_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
@@ -1231,7 +1214,6 @@
                 alert("🎉 Semua data breakdown berhasil diajukan!");
                 document.getElementById('breakdownForm').reset();
                 
-                // Beri jeda 1.5 detik agar Apps Script selesai menulis di Google Sheets sebelum ditarik ulang data terbarunya
                 setTimeout(async () => {
                     await fetchAllDataFromServer();
                 }, 1500);
@@ -1243,10 +1225,6 @@
                 document.getElementById('loading').classList.add('hidden');
             }
         }
-
-// =========================================================================
-        // TAMBAHAN: FUNGSI PENDUKUNG (UTILITY) YANG WAJIB ADA AGAR SCRIPT TIDAK CRASH
-        // =========================================================================
         
         function closeModal() {
             document.getElementById('breakdownModal').classList.add('hidden');
@@ -1285,7 +1263,6 @@
         }
 
         function applyFilters() {
-            // Pengaman agar tidak memproses jika data belum siap
             if (!globalDatabaseBarang || globalDatabaseBarang.length === 0) return;
 
             if (currentActiveTab === "acuan") {
@@ -1307,7 +1284,7 @@
             let totalPaguMaks = 0;
             let totalUsulanAwal = 0;
             let totalUsulanRevisi = 0;
-            let nomorUrut = 1; // Counter nomor urut
+            let nomorUrut = 1; 
 
             globalDatabaseBarang.forEach((item, index) => {
                 const entitas = (item.entitas || item.ENTITAS || '-').toString().trim().toUpperCase();
@@ -1345,7 +1322,6 @@
                     const tr = document.createElement('tr');
                     tr.className = "hover:bg-teal-50/60 transition-colors border-b border-gray-100 align-middle";
 
-                    // FIX 2 & 3: PENERAPAN NOMOR URUT DAN KELURUSAN FONT MONOSPACE ANGKA
                     tr.innerHTML = `
                         <td class="px-2 py-2.5 text-center font-mono text-xs text-gray-400 font-medium bg-gray-50/30">${nomorUrut++}</td>
                         <td class="px-3 py-2.5 text-left font-medium text-gray-900 tracking-tight">${nama} ${isWilayahLocked(entitas) ? '🔒' : ''}</td>
@@ -1416,9 +1392,6 @@
             }
         }
 
-        // =========================================================================
-        // REVISI SELESAI: FUNGSI BULK UPLOAD DENGAN STRIPPER KARAKTER TERSEMBUNYI
-        // =========================================================================
         function handleBulkCSVUpload() {
             const fileInput = document.getElementById('csvBulkFile');
             if (fileInput.files.length === 0) {
@@ -1437,8 +1410,6 @@
 
             reader.onload = async function (e) {
                 const text = e.target.result;
-                
-                // Pisahkan baris dengan aman mendeteksi carriage return Windows (\r\n)
                 const lines = text.split(/\r\n|\n|\r/); 
                 const finalDataRows = [];
 
@@ -1447,7 +1418,6 @@
                     return;
                 }
 
-                // Ambil header dan bersihkan karakter pembanding
                 const headers = lines[0].split(/[,;]/).map(h => h.replace(/["\r]/g, "").trim().toLowerCase());
                 
                 const idxNama = headers.indexOf("nama_barang");
@@ -1468,7 +1438,6 @@
                     const columns = currentLine.split(/[,;]/); 
                     
                     if (columns.length > Math.max(idxNama, idxQty, idxHarga, idxEntitas)) {
-                        // Bersihkan spasi gaib dan tanda kutip dua sisa parsing dari string Excel
                         const namaBarangClean = columns[idxNama].replace(/^["']|["']$/g, "").trim();
                         const entitasClean = columns[idxEntitas].replace(/^["']|["']$/g, "").trim().toUpperCase();
                         
@@ -1524,9 +1493,6 @@
             reader.readAsText(file);
         }
 
-        // =========================================================================
-        // MANAJEMEN TAB LEMBAR KONFIRMASI (TAB 4)
-        // =========================================================================
         function generateCheckboxWilayahKonfirmasi() {
             const container = document.getElementById('checkboxWilayahContainer');
             container.innerHTML = "";
@@ -1548,7 +1514,6 @@
             }
         }
 
-        // Object Mapping Nama Kantor Wilayah Lengkap
         const mappingNamaWilayah = {
             "W01": "W01 - Medan",
             "W02": "W02 - Padang",
@@ -1569,22 +1534,15 @@
             "W18": "W18 - Malang"
         };
 
-        // =========================================================================
-        // FUNGSI UTILITY BARU: FORMAT TANGGAL UTC KE LOCAL WIB (YYYY-MM-DD HH:mm:ss)
-        // =========================================================================
         function formatTanggalKeWib(waktuRaw) {
             if (!waktuRaw || waktuRaw === '-') return '-';
             
             try {
-                // Konversi string mentah dari database menjadi object Date Javascript resmi
                 const dateObj = new Date(waktuRaw);
-                
-                // Cek validitas penanggalan
                 if (isNaN(dateObj.getTime())) {
                     return waktuRaw.toString().replace("T", " ").split(".")[0];
                 }
 
-                // Ambil komponen tanggal lokal browser (otomatis mengikuti GMT+7 jika di Indonesia)
                 const year = dateObj.getFullYear();
                 const month = String(dateObj.getMonth() + 1).padStart(2, '0');
                 const day = String(dateObj.getDate()).padStart(2, '0');
@@ -1598,9 +1556,6 @@
             }
         }
 
-        // =========================================================================
-        // REVISI SELESAI: RENDER TAB 4 DENGAN SINKRONISASI JAM WIB YANG AKURAT
-        // =========================================================================
         function renderLembarKonfirmasi() {
             const tbody = document.getElementById('tableConfirmationSummaryBody');
             tbody.innerHTML = "";
@@ -1651,7 +1606,6 @@
                 let statusHtml = "";
 
                 if (dataKuncianWilayah) {
-                    // PENGGUNAAN FORMATTER WIB BARU AGAR SAMA PERSIS DENGAN GOOGLE SHEETS
                     const waktuFormatWib = formatTanggalKeWib(dataKuncianWilayah.tanggal);
 
                     statusHtml = `
@@ -1686,9 +1640,6 @@
             toggleSubmitConfirmBtn();
         }
 
-        // =========================================================================
-        // FIX MUTLAK: BYPASS OVERFLOW TAILWIND SECARA DINAMIS (ANTI TERPOTONG)
-        // =========================================================================
         function captureConfirmationTable() {
             const targetElement = document.getElementById('rekapKonfirmasiWrapper');
             
@@ -1698,31 +1649,26 @@
                 return;
             }
 
-            // Tampilkan loading screen
             document.getElementById('loading').classList.remove('hidden');
 
-            // 1. Cari elemen pembungkus tabel yang memiliki kelas overflow/max-height di dalam kontainer
             const tableContainer = targetElement.querySelector('.overflow-x-auto');
             
-            // Simpan style asli browser sebelum dimanipulasi agar tampilan di layar tidak rusak
             const originalMaxHeight = tableContainer ? tableContainer.style.maxHeight : '';
             const originalOverflowX = tableContainer ? tableContainer.style.overflowX : '';
             const originalOverflowY = tableContainer ? tableContainer.style.overflowY : '';
 
             if (tableContainer) {
-                // Paksa elemen tabel melebar dan memanjang penuh tanpa scrollbar internal
                 tableContainer.style.maxHeight = 'none';
                 tableContainer.style.overflowX = 'visible';
                 tableContainer.style.overflowY = 'visible';
             }
 
-            // Jeda 100ms agar browser selesai menerapkan perubahan layout fisik tabel
             setTimeout(() => {
                 const realHeight = targetElement.scrollHeight;
                 const realWidth = targetElement.scrollWidth;
 
                 htmlToImage.toPng(targetElement, {
-                    quality: 1.0, // Maksimalkan kualitas piksel gambar
+                    quality: 1.0, 
                     backgroundColor: '#ffffff',
                     width: realWidth,
                     height: realHeight,
@@ -1749,13 +1695,11 @@
                     alert('Terjadi kendala saat mengonversi file gambar pelaporan.');
                 })
                 .finally(function () {
-                    // 2. KEMBALIKAN STYLE ASLI TABLE DI LAYAR (Aplikasi tetap rapi dan ada scrollbar kembali)
                     if (tableContainer) {
                         tableContainer.style.maxHeight = originalMaxHeight;
                         tableContainer.style.overflowX = originalOverflowX;
                         tableContainer.style.overflowY = originalOverflowY;
                     }
-                    // Matikan loading screen
                     document.getElementById('loading').classList.add('hidden');
                 });
             }, 100);
@@ -1832,6 +1776,109 @@
             } finally {
                 document.getElementById('loading').classList.add('hidden');
             }
+        }
+
+        function downloadSummaryExcel() {
+            const tableElement = document.getElementById('summaryExcelTable');
+            if (!tableElement || globalLogBreakdown.length === 0) {
+                alert("⚠️ Tidak ada data summary yang tersedia untuk diunduh!");
+                return;
+            }
+
+            const workbook = XLSX.utils.table_to_book(tableElement, { raw: true });
+            const tanggalSkrg = new Intl.DateTimeFormat('id-ID', { dateStyle: 'medium' }).format(new Date()).replace(/\s+/g, '_');
+            const namaFile = `Summary_Breakdown_Perabotan_Non_Otomasi_${tanggalSkrg}.xlsx`;
+            XLSX.writeFile(workbook, namaFile);
+        }
+
+        // =========================================================================
+        // TAMBAHAN BARU: FUNGSI UNTUK GENERATE & DOWNLOAD PDF TAB 3 + VERIFIKASI
+        // =========================================================================
+        function downloadSummaryPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF('l', 'mm', 'a4'); // Set landscape A4
+
+            const activeWilayahFilter = document.getElementById('filterEntity').value;
+            let infoVerifikatorText = "Status: Data belum dikonfirmasi/dikunci oleh Kantor Wilayah terkait.";
+            
+            // Periksa berkas kuncian dari basis data log konfirmasi jika memfilter wilayah spesifik
+            if (activeWilayahFilter !== "ALL") {
+                const matchKuncian = globalListKonfirmasi.find(k => k.wilayah.toString().trim().toUpperCase() === activeWilayahFilter.toUpperCase());
+                if (matchKuncian) {
+                    infoVerifikatorText = `DATA INI TELAH LENGKAP & DIVERIFIKASI SECARA ELEKTRONIK OLEH:\nNama: ${matchKuncian.nama} | NPP: ${matchKuncian.npp} | Jabatan: ${matchKuncian.jabatan}\nTanggal Validasi: ${formatTanggalKeWib(matchKuncian.tanggal)} WIB`;
+                }
+            } else {
+                infoVerifikatorText = "Status: Menampilkan Semua Wilayah (Untuk melihat tanda tangan verifikator, silakan pilih filter wilayah spesifik).";
+            }
+
+            // 1. Desain Format Header Dokumen PDF
+            doc.setFont("Helvetica", "bold");
+            doc.setFontSize(14);
+            doc.text("FORMULIR BREAKDOWN PERABOTAN NON OTOMASI - CAPEX 2026", 14, 15);
+            
+            doc.setFont("Helvetica", "normal");
+            doc.setFontSize(10);
+            doc.text(`Rekapitulasi Sebaran Alokasi RBB - Wilayah Kerja: ${activeWilayahFilter}`, 14, 21);
+            doc.text(`Waktu Ekspor: ${new Date().toLocaleString('id-ID')} WIB`, 14, 26);
+            
+            doc.setLineWidth(0.4);
+            doc.setDrawColor(13, 148, 136); // Warna teal line
+            doc.line(14, 29, 283, 29);
+
+            // 2. Ekstrak Data dari Tabel HTML Aplikasi ke format jsPDF AutoTable
+            doc.autoTable({
+                html: '#summaryExcelTable',
+                startY: 33,
+                theme: 'grid',
+                styles: { fontSize: 7, cellPadding: 1.5, halign: 'center', valign: 'middle' },
+                headStyles: { fillColor: [13, 54, 49], textColor: [255, 255, 255], fontStyle: 'bold' },
+                columnStyles: {
+                    0: { halign: 'center', fontStyle: 'bold' }, // Wilayah
+                    1: { halign: 'left' },                      // Sub Entity
+                    2: { halign: 'left' },                      // Nama Barang
+                    3: { halign: 'right' },                     // Pagu Maks
+                    4: { halign: 'right' },                     // Usulan Awal
+                    5: { halign: 'right', fontStyle: 'bold' },  // Revisi RBB
+                    18: { halign: 'right' },                    // Harga Final
+                    19: { halign: 'right', fontStyle: 'bold' }  // Total Realisasi
+                },
+                didParseCell: function(data) {
+                    // Berikan highlight visual warna berbeda pada baris Sub-Total / Total Wilayah
+                    const cellText = data.cell.text.join(' ');
+                    if (cellText.includes('Sub Total Wilayah')) {
+                        data.cell.styles.fillColor = [13, 148, 136];
+                        data.cell.styles.textColor = [255, 255, 255];
+                        data.cell.styles.fontStyle = 'bold';
+                    } else if (cellText.includes('Sub-Total Unit:')) {
+                        data.cell.styles.fillColor = [254, 243, 199]; // Amber light row
+                        data.cell.styles.textColor = [120, 53, 4];
+                        data.cell.styles.fontStyle = 'bold';
+                    }
+                }
+            });
+
+            // 3. Desain Keterangan Validasi di bawah Tabel (Footer Penutup)
+            const finalY = doc.lastAutoTable.finalY + 12;
+            
+            doc.setFillColor(248, 250, 252); // Background abu-abu kotak info
+            doc.setDrawColor(203, 213, 225); // Border kotak info
+            doc.roundedRect(14, finalY, 269, 22, 2, 2, 'FD');
+
+            doc.setFont("Helvetica", "bold");
+            doc.setFontSize(8);
+            doc.textColor = [15, 23, 42];
+            doc.text("KONSISTENSI & VALIDITAS DATA", 18, finalY + 6);
+
+            doc.setFont("Helvetica", "normal");
+            doc.setFontSize(8.5);
+            doc.textColor = [51, 65, 85];
+            
+            // Print teks multibaris otomatis agar tidak terpotong ke samping
+            doc.text(infoVerifikatorText, 18, finalY + 12);
+
+            // Trigger Unduh File
+            const stringTgl = new Intl.DateTimeFormat('id-ID', { dateStyle: 'medium' }).format(new Date()).replace(/\s+/g, '_');
+            doc.save(`Summary_Breakdown_Perabotan_${stringTgl}.pdf`);
         }
 
     </script>
