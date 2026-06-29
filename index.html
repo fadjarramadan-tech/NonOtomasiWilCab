@@ -1170,7 +1170,13 @@
 
         function toggleSummaryRow(toggleId) {
             toggleStateSummary[toggleId] = !toggleStateSummary[toggleId];
-            renderSummaryBreakdown();
+            
+            // Pengecekan tab aktif agar fungsi refresh berjalan di tempat yang tepat
+            if (currentActiveTab === "nominalBulan") {
+                renderNominalBulanTable(); // Refresh tabel TAB 5
+            } else {
+                renderSummaryBreakdown();  // Refresh tabel TAB 3
+            }
         }
 
         function triggerEditFromLog(namaBarang, wilayahParent) {
