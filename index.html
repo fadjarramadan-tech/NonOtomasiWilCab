@@ -979,7 +979,7 @@
             document.getElementById('sumTotalAlokasi').textContent = formatRupiah(grandTotalRealisasi);
         }
 
-        // 2. MODIFIKASI: FUNGSI RENDER UNTUK TAB BARU (RINCIAN NOMINAL RUPIAH BULANAN DENGAN SUB-TOTAL & GRAND TOTAL)
+        // 2. MODIFIKASI: FUNGSI RENDER UNTUK TAB 5 (DENGAN HIERARKI GRUPPING & COLLAPSIBLE SAMA SEPERTI TAB 3)
         function renderNominalBulanTable() {
             const tbody = document.getElementById('nominalBulanTableBody');
             tbody.innerHTML = "";
@@ -1004,7 +1004,7 @@
                 return;
             }
 
-            // Grouping Berdasarkan Wilayah Kerja
+            // 1. Grouping Level 1: Wilayah Parent
             let mapWilayah = {};
             filteredLogs.forEach(log => {
                 let wil = log.wilayahParent.trim().toUpperCase();
@@ -1021,7 +1021,7 @@
                 let wilNominalBulan = Array(13).fill(0);
                 let wilTotalNominal = 0;
 
-                // Grouping Cabang / Sub-Entity di dalam Wilayah Terkait
+                // 2. Grouping Level 2: Sub Entity (Cabang / Unit) di dalam Wilayah
                 let mapSubEntity = {};
                 logsDiWilayah.forEach(log => {
                     let sub = log.subEntity.trim();
@@ -1029,7 +1029,10 @@
                     mapSubEntity[sub].push(log);
                 });
 
-                let wilayahRowsBuffer = [];
+                const wilToggleId = 'wil_nominal_' + wilayahKey;
+                if (toggleStateSummary[wilToggleId] === undefined) toggleStateSummary[wilToggleId] = true; 
+
+                let rowsBuffer = [];
 
                 Object.keys(mapSubEntity).sort().forEach(subEntityKey => {
                     let logsDiSubEntity = mapSubEntity[subEntityKey];
@@ -1039,6 +1042,7 @@
 
                     let subEntityRowsBuffer = [];
 
+                    // Rincian Baris Data Barang (Child Rows)
                     logsDiSubEntity.forEach(log => {
                         const masterItem = globalDatabaseBarang.find(item => 
                             (item.nama_barang || '').trim().toUpperCase() === log.namaBarang.trim().toUpperCase() &&
@@ -1058,7 +1062,7 @@
                             wilNominalBulan[m] += nominalBulan;
                             globalNominalBulan[m] += nominalBulan;
                             
-                            bulanNominalHtml += `<td class="p-1 font-mono text-right text-gray-600 border-r border-gray-100">${nominalBulan > 0 ? formatRupiah(nominalBulan) : '-'}</td>`;
+                            bulanNominalHtml += `<td class="p-1 font-mono text-right text-gray-500 bg-gray-50/40 border-r border-gray-200/50">${nominalBulan > 0 ? formatRupiah(nominalBulan) : '-'}</td>`;
                         }
 
                         subTotalNominal += rowTotalNominal;
@@ -1066,65 +1070,86 @@
                         globalTotalNominalAll += rowTotalNominal;
 
                         const tr = document.createElement('tr');
-                        tr.className = "hover:bg-teal-50/30 transition-colors border-b border-gray-100 text-[10px]";
+                        const subToggleId = `sub_nominal_${wilayahKey}_${subEntityKey.replace(/\s+/g, '_')}`;
+                        tr.className = `hover:bg-teal-50/40 transition-colors border-b border-gray-200 text-[10px] collapsible-row child-of-${wilToggleId} child-of-sub-${subToggleId}`;
+                        if (!toggleStateSummary[wilToggleId] || !toggleStateSummary[subToggleId]) tr.classList.add('hidden');
+                        
                         tr.innerHTML = `
-                            <td class="px-2 py-2 font-mono text-gray-400 border-r border-gray-100 text-center">${log.wilayahParent}</td>
-                            <td class="px-2 py-2 text-left text-gray-500 border-r border-gray-100 max-w-[120px] truncate">${log.subEntity}</td>
-                            <td class="px-2 py-2 text-left text-gray-900 border-r border-gray-100 font-medium">${log.namaBarang}</td>
-                            <td class="px-2 py-2 text-right font-mono font-semibold text-teal-950 bg-teal-50/20 border-r border-gray-100">${formatRupiah(hargaFinal)}</td>
+                            <td class="px-2 py-2 font-mono text-gray-400 border-r border-gray-200 text-center">${log.wilayahParent}</td>
+                            <td class="px-2 py-2 text-gray-500 border-r border-gray-200 text-left">${log.subEntity}</td>
+                            <td class="px-2 py-2 text-gray-900 border-r border-gray-200 font-medium text-left">${log.namaBarang}</td>
+                            <td class="px-2 py-2 text-right font-mono text-teal-950 border-r border-gray-200 bg-teal-50/20">${formatRupiah(hargaFinal)}</td>
                             ${bulanNominalHtml}
-                            <td class="px-2 py-2 text-right font-mono text-gray-600">${formatRupiah(rowTotalNominal)}</td>
+                            <td class="px-2 py-2 text-right font-mono text-gray-800 bg-amber-50/10 font-bold">${formatRupiah(rowTotalNominal)}</td>
                         `;
                         subEntityRowsBuffer.push(tr);
                     });
 
-                    // Baris Sub-Total per Cabang / Sub-Entity (Unit)
-                    const trSubTotal = document.createElement('tr');
-                    trSubTotal.className = "bg-amber-50/70 text-amber-950 border-b border-amber-200/80 font-semibold text-[10px]";
+                    const subToggleId = `sub_nominal_${wilayahKey}_${subEntityKey.replace(/\s+/g, '_')}`;
+                    if (toggleStateSummary[subToggleId] === undefined) toggleStateSummary[subToggleId] = true;
+
+                    // Baris Sub-Total Tingkat Unit/Sub-Entity (Cabang)
+                    const trSubEntityTotal = document.createElement('tr');
+                    trSubEntityTotal.className = `bg-amber-50/70 text-amber-950 border-b border-amber-200/80 font-semibold text-[10px] text-center collapsible-row child-of-${wilToggleId}`;
+                    if (!toggleStateSummary[wilToggleId]) trSubEntityTotal.classList.add('hidden');
+                    
                     let subBulanHtml = "";
                     for (let m = 1; m <= 12; m++) {
                         subBulanHtml += `<td class="p-1 font-mono text-right border-r border-amber-200/60">${subNominalBulan[m] > 0 ? formatRupiah(subNominalBulan[m]) : '-'}</td>`;
                     }
-                    trSubTotal.innerHTML = `
+
+                    const iconSub = toggleStateSummary[subToggleId] ? '[-] ' : '[+] ';
+                    trSubEntityTotal.innerHTML = `
                         <td class="px-2 py-1.5 font-mono text-center text-gray-400 border-r border-amber-100">—</td>
-                        <td class="px-2 py-1.5 text-amber-900 font-bold text-left" colspan="2">Sub-Total Unit: ${subEntityKey}</td>
-                        <td class="border-r border-amber-100 text-center text-gray-400">--</td>
+                        <td class="px-2 py-1.5 text-amber-900 font-bold text-left cursor-pointer select-none hover:text-amber-700" onclick="toggleSummaryRow('${subToggleId}')" colspan="2">
+                            <span class="font-mono text-[9px]">${iconSub}</span>Sub-Total Unit: ${subEntityKey}
+                        </td>
+                        <td class="border-r border-amber-100 text-center text-gray-400"> -- </td>
                         ${subBulanHtml}
                         <td class="px-2 py-1.5 text-right font-mono font-bold text-amber-900 bg-amber-100/30">${formatRupiah(subTotalNominal)}</td>
                     `;
-                    
-                    wilayahRowsBuffer.push(trSubTotal);
-                    wilayahRowsBuffer = wilayahRowsBuffer.concat(subEntityRowsBuffer);
+
+                    rowsBuffer.push(trSubEntityTotal);
+                    rowsBuffer = rowsBuffer.concat(subEntityRowsBuffer);
                 });
 
-                // Baris Sub-Total Utama per Wilayah
+                // Baris Sub-Total Tingkat Wilayah Utama
                 const trWilayahTotal = document.createElement('tr');
-                trWilayahTotal.className = "bg-teal-700 font-bold text-white border-b border-teal-800 text-[10px]";
+                trWilayahTotal.className = "bg-teal-700 font-bold text-white border-b border-teal-800 text-[10px] text-center sticky z-5";
+                
                 let wilBulanHtml = "";
                 for (let m = 1; m <= 12; m++) {
                     wilBulanHtml += `<td class="p-1 font-mono text-right border-r border-teal-600/50">${wilNominalBulan[m] > 0 ? formatRupiah(wilNominalBulan[m]) : 'Rp0'}</td>`;
                 }
+
+                const iconWil = toggleStateSummary[wilToggleId] ? '[-] ' : '[+] ';
                 trWilayahTotal.innerHTML = `
-                    <td class="px-2 py-2 font-mono uppercase tracking-wider bg-teal-800 text-center" colspan="2">Sub Total Wilayah</td>
+                    <td class="px-2 py-2 font-mono uppercase tracking-wider bg-teal-800 text-center cursor-pointer select-none hover:bg-teal-900" onclick="toggleSummaryRow('${wilToggleId}')" colspan="2">
+                        <span class="font-mono text-[9px]">${iconWil}</span>Sub Total Wilayah
+                    </td>
                     <td class="px-2 py-2 font-bold text-teal-100 text-left">ALL ${wilayahKey}</td>
-                    <td class="border-r border-teal-600/40 text-center text-teal-200">--</td>
+                    <td class="border-r border-teal-600/40 text-center text-teal-200"> -- </td>
                     ${wilBulanHtml}
                     <td class="px-2 py-2 text-right font-mono font-bold text-amber-200 bg-teal-900/60">${formatRupiah(wilTotalNominal)}</td>
                 `;
 
                 tbody.appendChild(trWilayahTotal);
-                wilayahRowsBuffer.forEach(r => tbody.appendChild(r));
+                rowsBuffer.forEach(rowElement => {
+                    tbody.appendChild(rowElement);
+                });
             });
 
-            // Baris Akumulasi Akhir (Grand Total Semua Wilayah)
+            // Baris Grand Total Akhir Semua Wilayah (Sticky Footer)
             const trGrandTotalNominal = document.createElement('tr');
-            trGrandTotalNominal.className = "bg-amber-600 font-bold text-white text-right border-t-2 border-amber-700 sticky bottom-0 z-10 shadow-md text-[10px]";
+            trGrandTotalNominal.className = "bg-amber-600 font-bold text-white text-center border-t-2 border-amber-700 sticky bottom-0 z-20 shadow-[0_-2px_10px_rgba(0,0,0,0.15)] text-[10px]";
+            
             let globalBulanNominalHtml = "";
             for (let m = 1; m <= 12; m++) {
                 globalBulanNominalHtml += `<td class="p-2 font-mono text-right border-r border-amber-500 text-yellow-200">${globalNominalBulan[m] > 0 ? formatRupiah(globalNominalBulan[m]) : 'Rp0'}</td>`;
             }
+
             trGrandTotalNominal.innerHTML = `
-                <td colspan="3" class="px-3 py-2.5 text-left uppercase bg-amber-700 font-bold">🔥 GRAND TOTAL SEMUA WILAYAH</td>
+                <td colspan="3" class="px-4 py-3 uppercase tracking-wider text-left text-xs bg-amber-700 font-black">🔥 GRAND TOTAL SEMUA WILAYAH</td>
                 <td class="border-r border-amber-500 text-center text-amber-100">--</td>
                 ${globalBulanNominalHtml}
                 <td class="px-2 py-2 font-black text-yellow-100 bg-amber-800 text-right font-mono text-xs">${formatRupiah(globalTotalNominalAll)}</td>
