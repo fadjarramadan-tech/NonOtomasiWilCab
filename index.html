@@ -244,33 +244,40 @@
                 📥 Export Excel Nominal (.xlsx)
             </button>
         </div>
-        <div class="overflow-x-auto max-h-[550px]">
+        
+        <div class="overflow-x-auto overflow-y-auto max-h-[550px]">
             <table id="nominalBulanExcelTable" class="min-w-full divide-y divide-gray-200 text-[10px] text-center border-collapse">
-                <thead class="bg-teal-900 text-white sticky top-0 z-10 shadow-sm">
+                <thead class="bg-teal-600 text-white font-semibold text-[10px] uppercase tracking-wider text-center border-b border-teal-700 sticky top-0 z-30 shadow-sm">
                     <tr>
-                        <th class="px-2 py-3 border-r border-teal-800">Wilayah</th>
-                        <th class="px-2 py-3 border-r border-teal-800">Sub Entity</th>
-                        <th class="px-2 py-3 border-r border-teal-800">Nama Barang</th>
-                        <th class="px-2 py-3 border-r border-teal-800 w-20">Harga Final</th>
-                        <th class="p-1 border-r border-teal-700 w-24">Jan (Rp)</th>
-                        <th class="p-1 border-r border-teal-700 w-24">Feb (Rp)</th>
-                        <th class="p-1 border-r border-teal-700 w-24">Mar (Rp)</th>
-                        <th class="p-1 border-r border-teal-700 w-24">Apr (Rp)</th>
-                        <th class="p-1 border-r border-teal-700 w-24">Mei (Rp)</th>
-                        <th class="p-1 border-r border-teal-700 w-24">Jun (Rp)</th>
-                        <th class="p-1 border-r border-teal-700 w-24">Jul (Rp)</th>
-                        <th class="p-1 border-r border-teal-700 w-24">Ags (Rp)</th>
-                        <th class="p-1 border-r border-teal-700 w-24">Sep (Rp)</th>
-                        <th class="p-1 border-r border-teal-700 w-24">Okt (Rp)</th>
-                        <th class="p-1 border-r border-teal-700 w-24">Nov (Rp)</th>
-                        <th class="p-1 border-r border-teal-700 w-24">Des (Rp)</th>
-                        <th class="px-2 py-3 font-bold bg-amber-900 text-amber-100 w-28">Total Realisasi</th>
+                        <th class="px-2 py-3 border-r border-teal-700 w-12 bg-teal-600">Wil</th>
+                        <th class="px-2 py-3 border-r border-teal-700 w-32 bg-teal-600">Sub-Entity / Unit</th>
+                        <th class="px-2 py-3 border-r border-teal-700 text-left bg-teal-600">Nama Barang / Perabotan</th>
+                        <th class="px-2 py-3 border-r border-teal-700 w-24 bg-teal-600">Harga Final</th>
+                        
+                        <th id="th_m1" class="p-1 border-r border-teal-700/50 col-m-1 hidden bg-teal-600/90 w-20">Jan</th>
+                        <th id="th_m2" class="p-1 border-r border-teal-700/50 col-m-2 hidden bg-teal-600/90 w-20">Feb</th>
+                        <th id="th_m3" class="p-1 border-r border-teal-700/50 col-m-3 hidden bg-teal-600/90 w-20">Mar</th>
+                        <th id="th_q1" class="p-1 border-r border-teal-700 bg-teal-700 cursor-pointer hover:bg-teal-800 select-none transition-colors w-28" onclick="toggleQuarterColumns(1)">Kuartal 1 (Q1) <span id="icon_q1" class="text-[9px] font-mono">[+]</span></th>
+                        
+                        <th id="th_m4" class="p-1 border-r border-teal-700/50 col-m-4 hidden bg-teal-600/90 w-20">Apr</th>
+                        <th id="th_m5" class="p-1 border-r border-teal-700/50 col-m-5 hidden bg-teal-600/90 w-20">Mei</th>
+                        <th id="th_m6" class="p-1 border-r border-teal-700/50 col-m-6 hidden bg-teal-600/90 w-20">Jun</th>
+                        <th id="th_q2" class="p-1 border-r border-teal-700 bg-teal-700 cursor-pointer hover:bg-teal-800 select-none transition-colors w-28" onclick="toggleQuarterColumns(2)">Kuartal 2 (Q2) <span id="icon_q2" class="text-[9px] font-mono">[+]</span></th>
+                        
+                        <th id="th_m7" class="p-1 border-r border-teal-700/50 col-m-7 hidden bg-teal-600/90 w-20">Jul</th>
+                        <th id="th_m8" class="p-1 border-r border-teal-700/50 col-m-8 hidden bg-teal-600/90 w-20">Ags</th>
+                        <th id="th_m9" class="p-1 border-r border-teal-700/50 col-m-9 hidden bg-teal-600/90 w-20">Sep</th>
+                        <th id="th_q3" class="p-1 border-r border-teal-700 bg-teal-700 cursor-pointer hover:bg-teal-800 select-none transition-colors w-28" onclick="toggleQuarterColumns(3)">Kuartal 3 (Q3) <span id="icon_q3" class="text-[9px] font-mono">[+]</span></th>
+                        
+                        <th id="th_m10" class="p-1 border-r border-teal-700/50 col-m-10 hidden bg-teal-600/90 w-20">Okt</th>
+                        <th id="th_m11" class="p-1 border-r border-teal-700/50 col-m-11 hidden bg-teal-600/90 w-20">Nov</th>
+                        <th class="p-1 border-r border-teal-700/50 col-m-12 hidden bg-teal-600/90 w-20">Des</th>
+                        <th id="th_q4" class="p-1 border-r border-teal-700 bg-teal-700 cursor-pointer hover:bg-teal-800 select-none transition-colors w-28" onclick="toggleQuarterColumns(4)">Kuartal 4 (Q4) <span id="icon_q4" class="text-[9px] font-mono">[+]</span></th>
+                        
+                        <th class="px-2 py-3 font-bold bg-amber-900 text-amber-100 w-32">Total Realisasi</th>
                     </tr>
                 </thead>
                 <tbody id="nominalBulanTableBody" class="divide-y divide-gray-200 text-gray-700">
-                    <tr>
-                        <td colspan="17" class="py-8 text-gray-400 italic text-center">Data kosong. Silakan atur filter wilayah kerja Anda.</td>
-                    </tr>
                 </tbody>
             </table>
         </div>
@@ -743,14 +750,12 @@
 
             let grandTotalRealisasi = 0;
             
-            // Variabel Akumulasi Global untuk Baris Grand Total
             let globalTotalENP = 0;
             let globalTotalUsulanAwal = 0;
             let globalTotalUsulanRevisi = 0;
             let globalTotalBulan = Array(13).fill(0);
             let globalGrandTotalRealisasiDana = 0;
 
-            // Hitung global total ENP dan Usulan Awal berdasarkan filter barang/wilayah aktif
             globalDatabaseBarang.forEach(item => {
                 const entitas = (item.entitas || '-').trim().toUpperCase();
                 if (entitas === "W13") return;
@@ -785,6 +790,7 @@
                 return;
             }
 
+            // Hitung distribusi data terlebih dahulu untuk mengisi angka Grand Total di atas
             let mapWilayah = {};
             filteredLogs.forEach(log => {
                 let wil = log.wilayahParent.trim().toUpperCase();
@@ -792,23 +798,16 @@
                 mapWilayah[wil].push(log);
             });
 
+            let nodesBuffer = [];
+
             Object.keys(mapWilayah).sort().forEach(wilayahKey => {
                 let logsDiWilayah = mapWilayah[wilayahKey];
-                
                 let wilTotalENP = 0;
                 let wilTotalUsulanAlokasi = 0;
 
                 globalDatabaseBarang.forEach(item => {
-                    const itemEntitas = (item.entitas || '-').trim().toUpperCase();
-                    const itemNama = (item.nama_barang || '').trim().toUpperCase();
-                    
-                    const matchWil = (itemEntitas === wilayahKey);
-                    const matchBarang = (selectedBarang === "ALL" || itemNama === selectedBarang.toUpperCase());
-                    
-                    if (matchWil && matchBarang) {
-                        const qty = cleanNumber(item.quantity);
-                        const harga = cleanNumber(item.price);
-                        wilTotalENP += cleanNumber(item.enp) || (qty * harga);
+                    if ((item.entitas || '-').trim().toUpperCase() === wilayahKey && (selectedBarang === "ALL" || (item.nama_barang || '').trim().toUpperCase() === selectedBarang.toUpperCase())) {
+                        wilTotalENP += cleanNumber(item.enp) || (cleanNumber(item.quantity) * cleanNumber(item.price));
                         wilTotalUsulanAlokasi += cleanNumber(item.alokasi);
                     }
                 });
@@ -825,27 +824,22 @@
                 });
 
                 const wilToggleId = 'wil_' + wilayahKey;
-                if (toggleStateSummary[wilToggleId] === undefined) toggleStateSummary[wilToggleId] = true; 
+                if (toggleStateSummary[wilToggleId] === undefined) toggleStateSummary[wilToggleId] = true;
 
-                let rowsBuffer = [];
+                let subNodesBuffer = [];
 
                 Object.keys(mapSubEntity).sort().forEach(subEntityKey => {
                     let logsDiSubEntity = mapSubEntity[subEntityKey];
-
-                    let subTotalENP = 0;
-                    let subTotalUsulanAlokasi = 0;
                     let subTotalAlokasiMenjadi = 0;
                     let subTotalBulan = Array(13).fill(0);
                     let subTotalRealisasiDana = 0;
-
-                    let subEntityRowsBuffer = [];
+                    let innerRows = [];
 
                     logsDiSubEntity.forEach(log => {
                         const masterItem = globalDatabaseBarang.find(item => 
                             (item.nama_barang || '').trim().toUpperCase() === log.namaBarang.trim().toUpperCase() &&
                             (item.entitas || '').trim().toUpperCase() === log.wilayahParent.trim().toUpperCase()
                         );
-
                         const hargaSatuanFinal = log.hargaFinal ? cleanNumber(log.hargaFinal) : (masterItem ? cleanNumber(masterItem.price) : 0);
                         
                         let sumJanDes = 0;
@@ -855,25 +849,21 @@
                             sumJanDes += valMo;
                             subTotalBulan[m] += valMo;
                             wilTotalBulan[m] += valMo;
-                            globalTotalBulan[m] += valMo; // Tambah ke global
+                            globalTotalBulan[m] += valMo;
                             bHtml += `<td class="p-1 font-mono text-gray-500 bg-gray-50/40 border-r border-gray-200/50 text-center">${valMo}</td>`;
                         }
 
                         const totalRencanaRealisasiBaris = sumJanDes * hargaSatuanFinal;
-                        const totalAlokasiMenjadiTab1 = totalRencanaRealisasiBaris; 
-                        
-                        subTotalENP += 0;
-                        subTotalUsulanAlokasi += 0;
-                        subTotalAlokasiMenjadi += totalAlokasiMenjadiTab1;
+                        subTotalAlokasiMenjadi += totalRencanaRealisasiBaris;
                         subTotalRealisasiDana += totalRencanaRealisasiBaris;
-
-                        wilTotalAlokasiMenjadi += totalAlokasiMenjadiTab1;
+                        wilTotalAlokasiMenjadi += totalRencanaRealisasiBaris;
                         wilTotalRealisasiDana += totalRencanaRealisasiBaris;
                         grandTotalRealisasi += totalRencanaRealisasiBaris;
 
                         const tr = document.createElement('tr');
-                        tr.className = `hover:bg-teal-50/40 transition-colors border-b border-gray-200 text-center collapsible-row child-of-${wilToggleId} child-of-sub-${wilayahKey}_${subEntityKey.replace(/\s+/g, '_')}`;
-                        if (!toggleStateSummary[wilToggleId]) tr.classList.add('hidden');
+                        const subToggleId = `sub_${wilayahKey}_${subEntityKey.replace(/\s+/g, '_')}`;
+                        tr.className = `hover:bg-teal-50/40 transition-colors border-b border-gray-200 text-center collapsible-row child-of-${wilToggleId} child-of-sub-${subToggleId}`;
+                        if (!toggleStateSummary[wilToggleId] || !toggleStateSummary[subToggleId]) tr.classList.add('hidden');
                         
                         tr.innerHTML = `
                             <td class="px-2 py-2 font-mono text-gray-400 border-r border-gray-200 text-center">${log.wilayahParent}</td>
@@ -881,12 +871,12 @@
                             <td class="px-2 py-2 text-gray-900 font-medium border-r border-gray-200 text-left">${log.namaBarang}</td>
                             <td class="px-2 py-2 text-right text-gray-400 border-r border-gray-200 font-mono">${formatRupiah(0)}</td>
                             <td class="px-2 py-2 text-right text-gray-400 border-r border-gray-200 font-mono">${formatRupiah(0)}</td>
-                            <td class="px-2 py-2 text-right text-amber-800 font-bold border-r border-gray-200 bg-amber-50/20 font-mono">${formatRupiah(totalAlokasiMenjadiTab1)}</td>
+                            <td class="px-2 py-2 text-right text-amber-800 font-bold border-r border-gray-200 bg-amber-50/20 font-mono">${formatRupiah(totalRencanaRealisasiBaris)}</td>
                             ${bHtml}
                             <td class="px-2 py-2 text-right font-mono text-teal-950 border-r border-gray-200 bg-teal-50/20">${formatRupiah(hargaSatuanFinal)}</td>
                             <td class="px-2 py-2 text-right font-mono text-gray-800 bg-amber-50/10 font-bold">${formatRupiah(totalRencanaRealisasiBaris)}</td>
                         `;
-                        subEntityRowsBuffer.push(tr);
+                        innerRows.push(tr);
                     });
 
                     const subToggleId = `sub_${wilayahKey}_${subEntityKey.replace(/\s+/g, '_')}`;
@@ -907,20 +897,16 @@
                         <td class="px-2 py-1.5 text-amber-900 font-bold text-left cursor-pointer select-none hover:text-amber-700" onclick="toggleSummaryRow('${subToggleId}')" colspan="2">
                             <span class="font-mono text-xs">${iconSub}</span>Sub-Total Unit: ${subEntityKey}
                         </td>
-                        <td class="px-2 py-1.5 text-right border-r border-amber-100 text-gray-400 font-mono">${formatRupiah(subTotalENP)}</td>
-                        <td class="px-2 py-1.5 text-right border-r border-amber-100 text-gray-400 font-mono">${formatRupiah(subTotalUsulanAlokasi)}</td>
+                        <td class="px-2 py-1.5 text-right border-r border-amber-100 text-gray-400 font-mono">${formatRupiah(0)}</td>
+                        <td class="px-2 py-1.5 text-right border-r border-amber-100 text-gray-400 font-mono">${formatRupiah(0)}</td>
                         <td class="px-2 py-1.5 text-right border-r border-amber-200 bg-amber-100/20 font-bold text-amber-900 font-mono">${formatRupiah(subTotalAlokasiMenjadi)}</td>
                         ${subEntityBulanHtml}
                         <td class="px-2 py-1.5 text-center text-[10px] text-gray-400 font-normal border-r border-amber-100"> -- </td>
                         <td class="px-2 py-1.5 text-right font-mono font-bold text-amber-900 bg-amber-100/30">${formatRupiah(subTotalRealisasiDana)}</td>
                     `;
 
-                    rowsBuffer.push(trSubEntityTotal);
-                    
-                    if (!toggleStateSummary[subToggleId]) {
-                        subEntityRowsBuffer.forEach(r => r.classList.add('hidden'));
-                    }
-                    rowsBuffer = rowsBuffer.concat(subEntityRowsBuffer);
+                    subNodesBuffer.push(trSubEntityTotal);
+                    subNodesBuffer = subNodesBuffer.concat(innerRows);
                 });
 
                 const trWilayahTotal = document.createElement('tr');
@@ -945,19 +931,17 @@
                     <td class="px-2 py-2 text-right font-mono font-bold text-amber-200 bg-teal-900/60">${formatRupiah(wilTotalRealisasiDana)}</td>
                 `;
 
-                tbody.appendChild(trWilayahTotal);
-                
                 globalTotalUsulanRevisi += wilTotalAlokasiMenjadi;
                 globalGrandTotalRealisasiDana += wilTotalRealisasiDana;
 
-                rowsBuffer.forEach(rowElement => {
-                    tbody.appendChild(rowElement);
-                });
+                nodesBuffer.push(trWilayahTotal);
+                nodesBuffer = nodesBuffer.concat(subNodesBuffer);
             });
 
-            // 1. MODIFIKASI: PENAMBAHAN BARIS GRAND TOTAL DI TAB 3 SUMMARY
-            const trGrandTotal = document.createElement('tr');
-            trGrandTotal.className = "bg-amber-600 font-bold text-white text-center border-t-2 border-amber-700 sticky bottom-0 z-20 shadow-[0_-2px_10px_rgba(0,0,0,0.15)]";
+            // 1. PINDAHKAN BARIS GRAND TOTAL KE ATAS (TAB 3) - Diberi sticky top agar melekat di bawah header
+            // Di dalam fungsi renderSummaryBreakdown() (TAB 3)
+		const trGrandTotal = document.createElement('tr');
+		trGrandTotal.className = "bg-amber-600 font-bold text-white text-center border-b-2 border-amber-700 shadow-sm text-xs";
             
             let globalBulanHtml = "";
             for (let m = 1; m <= 12; m++) {
@@ -965,7 +949,7 @@
             }
             
             trGrandTotal.innerHTML = `
-                <td colspan="3" class="px-4 py-3 uppercase tracking-wider text-left text-xs bg-amber-700 font-black">🔥 GRAND TOTAL ALL WILAYAH</td>
+                <td colspan="3" class="px-4 py-3 uppercase tracking-wider text-left text-xs bg-amber-700 font-semi bold">🔥 GRAND TOTAL ALL WILAYAH</td>
                 <td class="px-2 py-3 text-right border-r border-amber-500 font-mono text-xs">${formatRupiah(globalTotalENP)}</td>
                 <td class="px-2 py-3 text-right border-r border-amber-500 font-mono text-xs">${formatRupiah(globalTotalUsulanAwal)}</td>
                 <td class="px-2 py-3 text-right border-r border-amber-500 font-mono text-xs text-yellow-200">${formatRupiah(globalTotalUsulanRevisi)}</td>
@@ -973,13 +957,18 @@
                 <td class="px-2 py-3 text-center text-[10px] text-amber-100 font-normal border-r border-amber-500">Σ Global</td>
                 <td class="px-2 py-3 text-right font-mono text-yellow-100 text-xs bg-amber-800 font-black">${formatRupiah(globalGrandTotalRealisasiDana)}</td>
             `;
+            
+            // Masukkan Grand Total terlebih dahulu, baru rincian wilayahnya
             tbody.appendChild(trGrandTotal);
+            nodesBuffer.forEach(node => tbody.appendChild(node));
 
             document.getElementById('sumTotalENP').textContent = formatRupiah(globalTotalENP);
             document.getElementById('sumTotalAlokasi').textContent = formatRupiah(grandTotalRealisasi);
         }
 
-        // 2. MODIFIKASI: FUNGSI RENDER UNTUK TAB 5 (DENGAN HIERARKI GRUPPING & COLLAPSIBLE SAMA SEPERTI TAB 3)
+        // 2. MODIFIKASI: FUNGSI RENDER UTUH UNTUK TAB 5 (RINCIAN NOMINAL RUPIAH BERDASARKAN KUARTAL & BULANAN)
+        // FUNGSI UTUH REVISI TAB 5: FLAT HEADER SINKRONISASI DATALIST (COLLAPSIBLE KUARTAL & DATA VIEW)
+        // FUNGSI UTUH REVISI TAB 5: FLAT HEADER SINKRONISASI DATALIST (COLLAPSIBLE KUARTAL & DATA VIEW)
         function renderNominalBulanTable() {
             const tbody = document.getElementById('nominalBulanTableBody');
             tbody.innerHTML = "";
@@ -987,6 +976,25 @@
             const selectedEntity = document.getElementById('filterEntity').value;
             const selectedBarang = document.getElementById('filterBarang').value;
             const selectedSubEntity = document.getElementById('filterSubEntity').value;
+
+            // 1. MANAGEMEN KONSISTENSI VISIBILITAS MATRIKS BULANAN
+            for (let q = 1; q <= 4; q++) {
+                const isExpanded = quarterExpandState[q];
+                
+                const iconSpan = document.getElementById(`icon_q${q}`);
+                if (iconSpan) {
+                    iconSpan.innerText = isExpanded ? '[-]' : '[+]';
+                }
+                
+                const startMonth = (q - 1) * 3 + 1;
+                for (let m = startMonth; m < startMonth + 3; m++) {
+                    const thMonth = document.querySelector(`.col-m-${m}`);
+                    if (thMonth) {
+                        if (isExpanded) thMonth.classList.remove('hidden');
+                        else thMonth.classList.add('hidden');
+                    }
+                }
+            }
 
             const filteredLogs = globalLogBreakdown.filter(log => {
                 const entitasLog = log.wilayahParent.trim().toUpperCase();
@@ -1000,11 +1008,13 @@
             });
 
             if (filteredLogs.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="17" class="py-8 text-gray-400 italic text-center">Tidak ada rincian data log untuk kriteria filter dimaksud.</td></tr>`;
+                let totalCol = 5; 
+                for(let q = 1; q <= 4; q++) totalCol += (quarterExpandState[q] ? 4 : 1);
+                tbody.innerHTML = `<tr><td colspan="${totalCol}" class="py-8 text-gray-400 italic text-center">Tidak ada rincian data log untuk kriteria filter dimaksud.</td></tr>`;
                 return;
             }
 
-            // 1. Grouping Level 1: Wilayah Parent
+            // Grouping Tahap 1: Wilayah
             let mapWilayah = {};
             filteredLogs.forEach(log => {
                 let wil = log.wilayahParent.trim().toUpperCase();
@@ -1013,15 +1023,19 @@
             });
 
             let globalNominalBulan = Array(13).fill(0);
+            let globalNominalQuarter = Array(5).fill(0);
             let globalTotalNominalAll = 0;
 
+            let nodesBufferTab5 = [];
+
+            // Iterasi Pengelompokan Data
             Object.keys(mapWilayah).sort().forEach(wilayahKey => {
                 let logsDiWilayah = mapWilayah[wilayahKey];
-                
                 let wilNominalBulan = Array(13).fill(0);
+                let wilNominalQuarter = Array(5).fill(0);
                 let wilTotalNominal = 0;
 
-                // 2. Grouping Level 2: Sub Entity (Cabang / Unit) di dalam Wilayah
+                // Grouping Tahap 2: Sub Entity (Unit/Cabang)
                 let mapSubEntity = {};
                 logsDiWilayah.forEach(log => {
                     let sub = log.subEntity.trim();
@@ -1032,17 +1046,15 @@
                 const wilToggleId = 'wil_nominal_' + wilayahKey;
                 if (toggleStateSummary[wilToggleId] === undefined) toggleStateSummary[wilToggleId] = true; 
 
-                let rowsBuffer = [];
+                let wilayahRowsBuffer = [];
 
                 Object.keys(mapSubEntity).sort().forEach(subEntityKey => {
                     let logsDiSubEntity = mapSubEntity[subEntityKey];
-
                     let subNominalBulan = Array(13).fill(0);
+                    let subNominalQuarter = Array(5).fill(0);
                     let subTotalNominal = 0;
-
                     let subEntityRowsBuffer = [];
 
-                    // Rincian Baris Data Barang (Child Rows)
                     logsDiSubEntity.forEach(log => {
                         const masterItem = globalDatabaseBarang.find(item => 
                             (item.nama_barang || '').trim().toUpperCase() === log.namaBarang.trim().toUpperCase() &&
@@ -1051,23 +1063,42 @@
                         const hargaFinal = log.hargaFinal ? cleanNumber(log.hargaFinal) : (masterItem ? cleanNumber(masterItem.price) : 0);
                         
                         let rowTotalNominal = 0;
-                        let bulanNominalHtml = "";
+                        let mNominal = Array(13).fill(0);
+                        let qNominal = Array(5).fill(0);
 
                         for (let m = 1; m <= 12; m++) {
                             let qtyBulan = parseInt(log.detailBulan['bulan_' + m]) || 0;
                             let nominalBulan = qtyBulan * hargaFinal;
                             rowTotalNominal += nominalBulan;
+                            mNominal[m] = nominalBulan;
+
+                            let qId = Math.ceil(m / 3);
+                            qNominal[qId] += nominalBulan;
                             
                             subNominalBulan[m] += nominalBulan;
                             wilNominalBulan[m] += nominalBulan;
                             globalNominalBulan[m] += nominalBulan;
-                            
-                            bulanNominalHtml += `<td class="p-1 font-mono text-right text-gray-500 bg-gray-50/40 border-r border-gray-200/50">${nominalBulan > 0 ? formatRupiah(nominalBulan) : '-'}</td>`;
+                        }
+
+                        for(let q = 1; q <= 4; q++) {
+                            subNominalQuarter[q] += qNominal[q];
+                            wilNominalQuarter[q] += qNominal[q];
+                            globalNominalQuarter[q] += qNominal[q];
                         }
 
                         subTotalNominal += rowTotalNominal;
                         wilTotalNominal += rowTotalNominal;
                         globalTotalNominalAll += rowTotalNominal;
+
+                        // Bangun string kolom finansial flat
+                        let financialColumnsHtml = "";
+                        for (let q = 1; q <= 4; q++) {
+                            let startMonth = (q - 1) * 3 + 1;
+                            for (let m = startMonth; m < startMonth + 3; m++) {
+                                financialColumnsHtml += `<td class="p-1 font-mono text-right text-gray-500 bg-gray-50/10 border-r border-gray-100 ${quarterExpandState[q] ? '' : 'hidden'}">${mNominal[m] > 0 ? formatRupiah(mNominal[m]) : '-'}</td>`;
+                            }
+                            financialColumnsHtml += `<td class="p-1 font-mono text-right text-teal-950 bg-teal-50/20 font-semibold border-r border-gray-200">${qNominal[q] > 0 ? formatRupiah(qNominal[q]) : '-'}</td>`;
+                        }
 
                         const tr = document.createElement('tr');
                         const subToggleId = `sub_nominal_${wilayahKey}_${subEntityKey.replace(/\s+/g, '_')}`;
@@ -1075,11 +1106,11 @@
                         if (!toggleStateSummary[wilToggleId] || !toggleStateSummary[subToggleId]) tr.classList.add('hidden');
                         
                         tr.innerHTML = `
-                            <td class="px-2 py-2 font-mono text-gray-400 border-r border-gray-200 text-center">${log.wilayahParent}</td>
-                            <td class="px-2 py-2 text-gray-500 border-r border-gray-200 text-left">${log.subEntity}</td>
-                            <td class="px-2 py-2 text-gray-900 border-r border-gray-200 font-medium text-left">${log.namaBarang}</td>
-                            <td class="px-2 py-2 text-right font-mono text-teal-950 border-r border-gray-200 bg-teal-50/20">${formatRupiah(hargaFinal)}</td>
-                            ${bulanNominalHtml}
+                            <td class="px-2 py-2 font-mono text-gray-400 border-r border-gray-100 text-center">${log.wilayahParent}</td>
+                            <td class="px-2 py-2 text-gray-500 border-r border-gray-100 text-left max-w-[130px] truncate">${log.subEntity}</td>
+                            <td class="px-2 py-2 text-gray-900 border-r border-gray-100 font-medium text-left">${log.namaBarang}</td>
+                            <td class="px-2 py-2 text-right font-mono text-teal-950 border-r border-gray-100 bg-teal-50/10">${formatRupiah(hargaFinal)}</td>
+                            ${financialColumnsHtml}
                             <td class="px-2 py-2 text-right font-mono text-gray-800 bg-amber-50/10 font-bold">${formatRupiah(rowTotalNominal)}</td>
                         `;
                         subEntityRowsBuffer.push(tr);
@@ -1088,14 +1119,18 @@
                     const subToggleId = `sub_nominal_${wilayahKey}_${subEntityKey.replace(/\s+/g, '_')}`;
                     if (toggleStateSummary[subToggleId] === undefined) toggleStateSummary[subToggleId] = true;
 
-                    // Baris Sub-Total Tingkat Unit/Sub-Entity (Cabang)
+                    // Baris Sub-Total Cabang/Unit
                     const trSubEntityTotal = document.createElement('tr');
-                    trSubEntityTotal.className = `bg-amber-50/70 text-amber-950 border-b border-amber-200/80 font-semibold text-[10px] text-center collapsible-row child-of-${wilToggleId}`;
+                    trSubEntityTotal.className = `bg-amber-50/70 text-amber-950 border-b border-amber-200/80 font-semibold text-[10px] collapsible-row child-of-${wilToggleId}`;
                     if (!toggleStateSummary[wilToggleId]) trSubEntityTotal.classList.add('hidden');
                     
-                    let subBulanHtml = "";
-                    for (let m = 1; m <= 12; m++) {
-                        subBulanHtml += `<td class="p-1 font-mono text-right border-r border-amber-200/60">${subNominalBulan[m] > 0 ? formatRupiah(subNominalBulan[m]) : '-'}</td>`;
+                    let subFinancialHtml = "";
+                    for (let q = 1; q <= 4; q++) {
+                        let startMonth = (q - 1) * 3 + 1;
+                        for (let m = startMonth; m < startMonth + 3; m++) {
+                            subFinancialHtml += `<td class="p-1 font-mono text-right border-r border-amber-200/40 ${quarterExpandState[q] ? '' : 'hidden'}">${subNominalBulan[m] > 0 ? formatRupiah(subNominalBulan[m]) : '-'}</td>`;
+                        }
+                        subFinancialHtml += `<td class="p-1 font-mono text-right font-bold text-teal-950 bg-teal-100/20 border-r border-amber-200">${subNominalQuarter[q] > 0 ? formatRupiah(subNominalQuarter[q]) : '-'}</td>`;
                     }
 
                     const iconSub = toggleStateSummary[subToggleId] ? '[-] ' : '[+] ';
@@ -1105,21 +1140,25 @@
                             <span class="font-mono text-[9px]">${iconSub}</span>Sub-Total Unit: ${subEntityKey}
                         </td>
                         <td class="border-r border-amber-100 text-center text-gray-400"> -- </td>
-                        ${subBulanHtml}
+                        ${subFinancialHtml}
                         <td class="px-2 py-1.5 text-right font-mono font-bold text-amber-900 bg-amber-100/30">${formatRupiah(subTotalNominal)}</td>
                     `;
 
-                    rowsBuffer.push(trSubEntityTotal);
-                    rowsBuffer = rowsBuffer.concat(subEntityRowsBuffer);
+                    wilayahRowsBuffer.push(trSubEntityTotal);
+                    wilayahRowsBuffer = wilayahRowsBuffer.concat(subEntityRowsBuffer);
                 });
 
-                // Baris Sub-Total Tingkat Wilayah Utama
+                // Baris Sub-Total Utama Wilayah Kerja
                 const trWilayahTotal = document.createElement('tr');
-                trWilayahTotal.className = "bg-teal-700 font-bold text-white border-b border-teal-800 text-[10px] text-center sticky z-5";
+                trWilayahTotal.className = "bg-teal-700 font-bold text-white border-b border-teal-800 text-[10px]";
                 
-                let wilBulanHtml = "";
-                for (let m = 1; m <= 12; m++) {
-                    wilBulanHtml += `<td class="p-1 font-mono text-right border-r border-teal-600/50">${wilNominalBulan[m] > 0 ? formatRupiah(wilNominalBulan[m]) : 'Rp0'}</td>`;
+                let wilFinancialHtml = "";
+                for (let q = 1; q <= 4; q++) {
+                    let startMonth = (q - 1) * 3 + 1;
+                    for (let m = startMonth; m < startMonth + 3; m++) {
+                        wilFinancialHtml += `<td class="p-1 font-mono text-right border-r border-teal-600/30 ${quarterExpandState[q] ? '' : 'hidden'}">${wilNominalBulan[m] > 0 ? formatRupiah(wilNominalBulan[m]) : 'Rp0'}</td>`;
+                    }
+                    wilFinancialHtml += `<td class="p-1 font-mono text-right font-bold text-yellow-300 bg-teal-800/80 border-r border-teal-800">${wilNominalQuarter[q] > 0 ? formatRupiah(wilNominalQuarter[q]) : 'Rp0'}</td>`;
                 }
 
                 const iconWil = toggleStateSummary[wilToggleId] ? '[-] ' : '[+] ';
@@ -1129,32 +1168,43 @@
                     </td>
                     <td class="px-2 py-2 font-bold text-teal-100 text-left">ALL ${wilayahKey}</td>
                     <td class="border-r border-teal-600/40 text-center text-teal-200"> -- </td>
-                    ${wilBulanHtml}
+                    ${wilFinancialHtml}
                     <td class="px-2 py-2 text-right font-mono font-bold text-amber-200 bg-teal-900/60">${formatRupiah(wilTotalNominal)}</td>
                 `;
 
-                tbody.appendChild(trWilayahTotal);
-                rowsBuffer.forEach(rowElement => {
-                    tbody.appendChild(rowElement);
-                });
+                nodesBufferTab5.push(trWilayahTotal);
+                // PERBAIKAN DI SINI: Menggabungkan variabel wilayahRowsBuffer yang benar ke nodesBufferTab5
+                nodesBufferTab5 = nodesBufferTab5.concat(wilayahRowsBuffer);
             });
 
-            // Baris Grand Total Akhir Semua Wilayah (Sticky Footer)
+            // 3. BARIS AGREGAT AKHIR (GRAND TOTAL SEMUA WILAYAH DI ATAS)
             const trGrandTotalNominal = document.createElement('tr');
-            trGrandTotalNominal.className = "bg-amber-600 font-bold text-white text-center border-t-2 border-amber-700 sticky bottom-0 z-20 shadow-[0_-2px_10px_rgba(0,0,0,0.15)] text-[10px]";
+            trGrandTotalNominal.className = "bg-amber-600 font-bold text-white text-center border-b-2 border-amber-700 text-[10px]";
             
-            let globalBulanNominalHtml = "";
-            for (let m = 1; m <= 12; m++) {
-                globalBulanNominalHtml += `<td class="p-2 font-mono text-right border-r border-amber-500 text-yellow-200">${globalNominalBulan[m] > 0 ? formatRupiah(globalNominalBulan[m]) : 'Rp0'}</td>`;
+            let globalFinancialHtml = "";
+            for (let q = 1; q <= 4; q++) {
+                let startMonth = (q - 1) * 3 + 1;
+                for (let m = startMonth; m < startMonth + 3; m++) {
+                    globalFinancialHtml += `<td class="p-2 font-mono text-right border-r border-amber-500/50 text-orange-100 ${quarterExpandState[q] ? '' : 'hidden'}">${globalNominalBulan[m] > 0 ? formatRupiah(globalNominalBulan[m]) : 'Rp0'}</td>`;
+                }
+                globalFinancialHtml += `<td class="p-2 font-mono text-right border-r border-amber-700 text-yellow-200 bg-amber-700/60">${globalNominalQuarter[q] > 0 ? formatRupiah(globalNominalQuarter[q]) : 'Rp0'}</td>`;
             }
 
             trGrandTotalNominal.innerHTML = `
-                <td colspan="3" class="px-4 py-3 uppercase tracking-wider text-left text-xs bg-amber-700 font-black">🔥 GRAND TOTAL SEMUA WILAYAH</td>
+                <td colspan="3" class="px-4 py-3 uppercase tracking-wider text-left text-xs bg-amber-700 font-semi bold">🔥 GRAND TOTAL ALL WILAYAH</td>
                 <td class="border-r border-amber-500 text-center text-amber-100">--</td>
-                ${globalBulanNominalHtml}
+                ${globalFinancialHtml}
                 <td class="px-2 py-2 font-black text-yellow-100 bg-amber-800 text-right font-mono text-xs">${formatRupiah(globalTotalNominalAll)}</td>
             `;
+            
             tbody.appendChild(trGrandTotalNominal);
+            nodesBufferTab5.forEach(node => tbody.appendChild(node));
+        }
+
+	// Fungsi pemicu ketika header kuartal tertentu diklik
+        function toggleQuarterColumns(quarterId) {
+            quarterExpandState[quarterId] = !quarterExpandState[quarterId];
+            renderNominalBulanTable(); // Gambar ulang tabel dengan susunan kolom terbaru
         }
 
         function downloadNominalExcel() {
@@ -1167,6 +1217,9 @@
             const tanggalSkrg = new Intl.DateTimeFormat('id-ID', { dateStyle: 'medium' }).format(new Date()).replace(/\s+/g, '_');
             XLSX.writeFile(workbook, `Rincian_Nominal_Bulanan_RBB_${tanggalSkrg}.xlsx`);
         }
+
+	// State global untuk mengontrol buka-tutup kolom kuartal (false = sembunyi bulan, true = tampilkan bulan)
+        let quarterExpandState = { 1: false, 2: false, 3: false, 4: false };
 
         function toggleSummaryRow(toggleId) {
             toggleStateSummary[toggleId] = !toggleStateSummary[toggleId];
