@@ -268,7 +268,7 @@
                         <th class="px-2 py-3 border-r border-teal-700 w-12 bg-teal-600">Wil</th>
                         <th class="px-2 py-3 border-r border-teal-700 w-32 bg-teal-600">Sub-Entity / Unit</th>
                         <th class="px-2 py-3 border-r border-teal-700 text-left bg-teal-600">Nama Barang / Perabotan</th>
-                        <th class="px-2 py-3 border-r border-teal-700 w-24 bg-teal-600">Harga Final</th>
+                        <th class="px-2 py-3 border-r border-teal-700 w-24 bg-teal-600">Harga Satuan Final</th>
                         
                         <th id="th_m1" class="p-1 border-r border-teal-700/50 col-m-1 hidden bg-teal-600/90 w-20">Jan</th>
                         <th id="th_m2" class="p-1 border-r border-teal-700/50 col-m-2 hidden bg-teal-600/90 w-20">Feb</th>
@@ -1409,7 +1409,7 @@
             
             let headerHtml = `
                 <th class="p-3 text-left w-44 bg-gray-50">Sub Entity (Cabang)</th>
-                <th class="p-3 w-28 bg-gray-50 text-right">Harga Final (Rp)</th>
+                <th class="p-3 w-28 bg-gray-50 text-right">Harga Satuan Final (Rp)</th>
                 <th class="p-3 w-16 bg-gray-50">Total Qty</th>`;
             
             bulanArr.forEach(b => {
@@ -1575,7 +1575,7 @@
             }
 
             if (totalENPInput > currentItemAlokasiENP) {
-                alert(`❌ GAGAL AJUKAN BREAKDOWN (OVERBUDGET)!\n\nTotal Rencana Realisasi sebesar ${formatRupiah(totalENPInput)} melebihi batas anggaran plafon wilayah sebesar ${formatRupiah(currentItemAlokasiENP)}.\n\nSilakan kurangi sebaran kuantiti bulanan atau sesuaikan harga final Anda.`);
+                alert(`❌ GAGAL AJUKAN BREAKDOWN (OVERBUDGET)!\n\nTotal Rencana Realisasi sebesar ${formatRupiah(totalENPInput)} melebihi batas anggaran plafon wilayah sebesar ${formatRupiah(currentItemAlokasiENP)}.\n\nSilakan kurangi sebaran kuantiti bulanan atau sesuaikan harga satuan final Anda.`);
                 return; 
             }
 
