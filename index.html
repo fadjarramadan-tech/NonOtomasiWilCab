@@ -6,7 +6,6 @@
     <title>Form Breakdown Perabotan RBB 2026</title>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/html-to-image/1.11.11/html-to-image.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <!-- Library untuk Export Excel & PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
@@ -70,6 +69,9 @@
                 </button>
                 <button id="tabBtnSummary" onclick="switchTab('summary')" class="px-4 py-2.5 font-semibold text-xs md:text-sm rounded-t-xl transition-all bg-teal-50/50 text-teal-700 hover:bg-teal-100/50">
                     🗂️ 3. Summary Breakdown Perabotan
+                </button>
+                <button id="tabBtnNominalBulan" onclick="switchTab('nominalBulan')" class="px-4 py-2.5 font-semibold text-xs md:text-sm rounded-t-xl transition-all bg-teal-50/50 text-teal-700 hover:bg-teal-100/50">
+                    💰 5. Rincian Nominal Realisasi Bulanan (Rupiah)
                 </button>
                 <button id="tabBtnKonfirmasi" onclick="switchTab('konfirmasi')" class="px-4 py-2.5 font-semibold text-xs md:text-sm rounded-t-xl transition-all bg-teal-50/50 text-teal-700 hover:bg-teal-100/50">
                     🔏 4. Lembar Konfirmasi
@@ -183,7 +185,6 @@
         </div>
     </div>
 
-    <!-- TAB 3: Ditambahkan Tombol Download Excel & PDF -->
     <div id="tabContentSummary" class="bg-white p-5 rounded-xl shadow-md border border-teal-100 flex flex-col hidden">
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3 gap-2">
             <h2 class="text-base font-bold text-teal-900">🗂️ Summary Breakdown Perabotan Non Otomasi (Dengan Sub-Total Wilayah & Unit)</h2>
@@ -230,6 +231,45 @@
                 <tbody id="summaryTableBody" class="divide-y divide-gray-200 text-gray-700">
                     <tr>
                         <td colspan="18" class="py-8 text-gray-400 italic text-center">Data summary kosong. Silakan sesuaikan filter wilayah.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="tabContentNominalBulan" class="bg-white p-5 rounded-xl shadow-md border border-teal-100 flex flex-col hidden">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3 gap-2">
+            <h2 class="text-base font-bold text-teal-900">💰 5. Rincian Nominal Realisasi Bulanan (Kalkulasi Qty x Harga Satuan Final)</h2>
+            <button onclick="downloadNominalExcel()" class="px-3 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs rounded-lg transition shadow-sm flex items-center gap-1.5 cursor-pointer">
+                📥 Export Excel Nominal (.xlsx)
+            </button>
+        </div>
+        <div class="overflow-x-auto max-h-[550px]">
+            <table id="nominalBulanExcelTable" class="min-w-full divide-y divide-gray-200 text-[10px] text-center border-collapse">
+                <thead class="bg-teal-900 text-white sticky top-0 z-10 shadow-sm">
+                    <tr>
+                        <th class="px-2 py-3 border-r border-teal-800">Wilayah</th>
+                        <th class="px-2 py-3 border-r border-teal-800">Sub Entity</th>
+                        <th class="px-2 py-3 border-r border-teal-800">Nama Barang</th>
+                        <th class="px-2 py-3 border-r border-teal-800 w-20">Harga Final</th>
+                        <th class="p-1 border-r border-teal-700 w-24">Jan (Rp)</th>
+                        <th class="p-1 border-r border-teal-700 w-24">Feb (Rp)</th>
+                        <th class="p-1 border-r border-teal-700 w-24">Mar (Rp)</th>
+                        <th class="p-1 border-r border-teal-700 w-24">Apr (Rp)</th>
+                        <th class="p-1 border-r border-teal-700 w-24">Mei (Rp)</th>
+                        <th class="p-1 border-r border-teal-700 w-24">Jun (Rp)</th>
+                        <th class="p-1 border-r border-teal-700 w-24">Jul (Rp)</th>
+                        <th class="p-1 border-r border-teal-700 w-24">Ags (Rp)</th>
+                        <th class="p-1 border-r border-teal-700 w-24">Sep (Rp)</th>
+                        <th class="p-1 border-r border-teal-700 w-24">Okt (Rp)</th>
+                        <th class="p-1 border-r border-teal-700 w-24">Nov (Rp)</th>
+                        <th class="p-1 border-r border-teal-700 w-24">Des (Rp)</th>
+                        <th class="px-2 py-3 font-bold bg-amber-900 text-amber-100 w-28">Total Realisasi</th>
+                    </tr>
+                </thead>
+                <tbody id="nominalBulanTableBody" class="divide-y divide-gray-200 text-gray-700">
+                    <tr>
+                        <td colspan="17" class="py-8 text-gray-400 italic text-center">Data kosong. Silakan atur filter wilayah kerja Anda.</td>
                     </tr>
                 </tbody>
             </table>
@@ -391,11 +431,13 @@
             const tabAcuan = document.getElementById('tabContentAcuan');
             const tabMonitoring = document.getElementById('tabContentMonitoring');
             const tabSummary = document.getElementById('tabContentSummary');
+            const tabNominalBulan = document.getElementById('tabContentNominalBulan');
             const tabKonfirmasi = document.getElementById('tabContentKonfirmasi');
             
             const btnAcuan = document.getElementById('tabBtnAcuan');
             const btnMonitoring = document.getElementById('tabBtnMonitoring');
             const btnSummary = document.getElementById('tabBtnSummary');
+            const btnNominalBulan = document.getElementById('tabBtnNominalBulan');
             const btnKonfirmasi = document.getElementById('tabBtnKonfirmasi');
 
             const sidebar = document.getElementById('sidebarPanduan');
@@ -404,11 +446,13 @@
             btnAcuan.className = "px-4 py-2.5 font-semibold text-xs md:text-sm rounded-t-xl transition-all bg-teal-50/50 text-teal-700 hover:bg-teal-100/50";
             btnMonitoring.className = "px-4 py-2.5 font-semibold text-xs md:text-sm rounded-t-xl transition-all bg-teal-50/50 text-teal-700 hover:bg-teal-100/50";
             btnSummary.className = "px-4 py-2.5 font-semibold text-xs md:text-sm rounded-t-xl transition-all bg-teal-50/50 text-teal-700 hover:bg-teal-100/50";
+            btnNominalBulan.className = "px-4 py-2.5 font-semibold text-xs md:text-sm rounded-t-xl transition-all bg-teal-50/50 text-teal-700 hover:bg-teal-100/50";
             btnKonfirmasi.className = "px-4 py-2.5 font-semibold text-xs md:text-sm rounded-t-xl transition-all bg-teal-50/50 text-teal-700 hover:bg-teal-100/50";
             
             tabAcuan.classList.add('hidden');
             tabMonitoring.classList.add('hidden');
             tabSummary.classList.add('hidden');
+            tabNominalBulan.classList.add('hidden');
             tabKonfirmasi.classList.add('hidden');
 
             if (tabName === 'acuan') {
@@ -433,6 +477,10 @@
                 } else if (tabName === 'summary') {
                     tabSummary.classList.remove('hidden');
                     btnSummary.className = "px-4 py-2.5 font-bold text-xs md:text-sm rounded-t-xl transition-all bg-white text-teal-950 border-t border-x border-teal-200 -mb-[1px]";
+                    applyFilters();
+                } else if (tabName === 'nominalBulan') {
+                    tabNominalBulan.classList.remove('hidden');
+                    btnNominalBulan.className = "px-4 py-2.5 font-bold text-xs md:text-sm rounded-t-xl transition-all bg-white text-teal-950 border-t border-x border-teal-200 -mb-[1px]";
                     applyFilters();
                 }
             }
@@ -694,6 +742,27 @@
             const selectedSubEntity = document.getElementById('filterSubEntity').value;
 
             let grandTotalRealisasi = 0;
+            
+            // Variabel Akumulasi Global untuk Baris Grand Total
+            let globalTotalENP = 0;
+            let globalTotalUsulanAwal = 0;
+            let globalTotalUsulanRevisi = 0;
+            let globalTotalBulan = Array(13).fill(0);
+            let globalGrandTotalRealisasiDana = 0;
+
+            // Hitung global total ENP dan Usulan Awal berdasarkan filter barang/wilayah aktif
+            globalDatabaseBarang.forEach(item => {
+                const entitas = (item.entitas || '-').trim().toUpperCase();
+                if (entitas === "W13") return;
+                
+                const matchEntity = (selectedEntity === "ALL" || entitas === selectedEntity.toUpperCase());
+                const matchBarang = (selectedBarang === "ALL" || (item.nama_barang || '').trim().toUpperCase() === selectedBarang.toUpperCase());
+                
+                if (matchEntity && matchBarang) {
+                    globalTotalENP += (cleanNumber(item.enp) || (cleanNumber(item.quantity) * cleanNumber(item.price)));
+                    globalTotalUsulanAwal += cleanNumber(item.alokasi);
+                }
+            });
 
             if (globalLogBreakdown.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="18" class="py-8 text-gray-400 italic text-center">Belum ada pengajuan breakdown di database log.</td></tr>`;
@@ -786,6 +855,7 @@
                             sumJanDes += valMo;
                             subTotalBulan[m] += valMo;
                             wilTotalBulan[m] += valMo;
+                            globalTotalBulan[m] += valMo; // Tambah ke global
                             bHtml += `<td class="p-1 font-mono text-gray-500 bg-gray-50/40 border-r border-gray-200/50 text-center">${valMo}</td>`;
                         }
 
@@ -876,26 +946,201 @@
                 `;
 
                 tbody.appendChild(trWilayahTotal);
+                
+                globalTotalUsulanRevisi += wilTotalAlokasiMenjadi;
+                globalGrandTotalRealisasiDana += wilTotalRealisasiDana;
+
                 rowsBuffer.forEach(rowElement => {
                     tbody.appendChild(rowElement);
                 });
             });
 
-            let totalMaksimumPaguENP = 0;
-            globalDatabaseBarang.forEach(item => {
-                const entitas = (item.entitas || '-').trim().toUpperCase();
-                if (entitas === "W13") return;
+            // 1. MODIFIKASI: PENAMBAHAN BARIS GRAND TOTAL DI TAB 3 SUMMARY
+            const trGrandTotal = document.createElement('tr');
+            trGrandTotal.className = "bg-amber-600 font-bold text-white text-center border-t-2 border-amber-700 sticky bottom-0 z-20 shadow-[0_-2px_10px_rgba(0,0,0,0.15)]";
+            
+            let globalBulanHtml = "";
+            for (let m = 1; m <= 12; m++) {
+                globalBulanHtml += `<td class="p-2 font-mono border-r border-amber-500 text-center text-xs">${globalTotalBulan[m]}</td>`;
+            }
+            
+            trGrandTotal.innerHTML = `
+                <td colspan="3" class="px-4 py-3 uppercase tracking-wider text-left text-xs bg-amber-700 font-black">🔥 GRAND TOTAL ALL WILAYAH</td>
+                <td class="px-2 py-3 text-right border-r border-amber-500 font-mono text-xs">${formatRupiah(globalTotalENP)}</td>
+                <td class="px-2 py-3 text-right border-r border-amber-500 font-mono text-xs">${formatRupiah(globalTotalUsulanAwal)}</td>
+                <td class="px-2 py-3 text-right border-r border-amber-500 font-mono text-xs text-yellow-200">${formatRupiah(globalTotalUsulanRevisi)}</td>
+                ${globalBulanHtml}
+                <td class="px-2 py-3 text-center text-[10px] text-amber-100 font-normal border-r border-amber-500">Σ Global</td>
+                <td class="px-2 py-3 text-right font-mono text-yellow-100 text-xs bg-amber-800 font-black">${formatRupiah(globalGrandTotalRealisasiDana)}</td>
+            `;
+            tbody.appendChild(trGrandTotal);
+
+            document.getElementById('sumTotalENP').textContent = formatRupiah(globalTotalENP);
+            document.getElementById('sumTotalAlokasi').textContent = formatRupiah(grandTotalRealisasi);
+        }
+
+        // 2. MODIFIKASI: FUNGSI RENDER UNTUK TAB BARU (RINCIAN NOMINAL RUPIAH BULANAN DENGAN SUB-TOTAL & GRAND TOTAL)
+        function renderNominalBulanTable() {
+            const tbody = document.getElementById('nominalBulanTableBody');
+            tbody.innerHTML = "";
+
+            const selectedEntity = document.getElementById('filterEntity').value;
+            const selectedBarang = document.getElementById('filterBarang').value;
+            const selectedSubEntity = document.getElementById('filterSubEntity').value;
+
+            const filteredLogs = globalLogBreakdown.filter(log => {
+                const entitasLog = log.wilayahParent.trim().toUpperCase();
+                if (entitasLog === "W13") return false;
+
+                const matchEntity = (selectedEntity === "ALL" || entitasLog === selectedEntity.toUpperCase());
+                const matchBarang = (selectedBarang === "ALL" || log.namaBarang.trim().toUpperCase() === selectedBarang.toUpperCase());
+                const matchSub = (selectedSubEntity === "ALL" || (log.subEntity || '').trim().toUpperCase() === selectedSubEntity.toUpperCase());
                 
-                const matchEntity = (selectedEntity === "ALL" || entitas === selectedEntity.toUpperCase());
-                const matchBarang = (selectedBarang === "ALL" || (item.nama_barang || '').trim().toUpperCase() === selectedBarang.toUpperCase());
-                
-                if (matchEntity && matchBarang) {
-                    totalMaksimumPaguENP += (cleanNumber(item.enp) || (cleanNumber(item.quantity) * cleanNumber(item.price)));
-                }
+                return matchEntity && matchBarang && matchSub;
             });
 
-            document.getElementById('sumTotalENP').textContent = formatRupiah(totalMaksimumPaguENP);
-            document.getElementById('sumTotalAlokasi').textContent = formatRupiah(grandTotalRealisasi);
+            if (filteredLogs.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="17" class="py-8 text-gray-400 italic text-center">Tidak ada rincian data log untuk kriteria filter dimaksud.</td></tr>`;
+                return;
+            }
+
+            // Grouping Berdasarkan Wilayah Kerja
+            let mapWilayah = {};
+            filteredLogs.forEach(log => {
+                let wil = log.wilayahParent.trim().toUpperCase();
+                if (!mapWilayah[wil]) mapWilayah[wil] = [];
+                mapWilayah[wil].push(log);
+            });
+
+            let globalNominalBulan = Array(13).fill(0);
+            let globalTotalNominalAll = 0;
+
+            Object.keys(mapWilayah).sort().forEach(wilayahKey => {
+                let logsDiWilayah = mapWilayah[wilayahKey];
+                
+                let wilNominalBulan = Array(13).fill(0);
+                let wilTotalNominal = 0;
+
+                // Grouping Cabang / Sub-Entity di dalam Wilayah Terkait
+                let mapSubEntity = {};
+                logsDiWilayah.forEach(log => {
+                    let sub = log.subEntity.trim();
+                    if (!mapSubEntity[sub]) mapSubEntity[sub] = [];
+                    mapSubEntity[sub].push(log);
+                });
+
+                let wilayahRowsBuffer = [];
+
+                Object.keys(mapSubEntity).sort().forEach(subEntityKey => {
+                    let logsDiSubEntity = mapSubEntity[subEntityKey];
+
+                    let subNominalBulan = Array(13).fill(0);
+                    let subTotalNominal = 0;
+
+                    let subEntityRowsBuffer = [];
+
+                    logsDiSubEntity.forEach(log => {
+                        const masterItem = globalDatabaseBarang.find(item => 
+                            (item.nama_barang || '').trim().toUpperCase() === log.namaBarang.trim().toUpperCase() &&
+                            (item.entitas || '').trim().toUpperCase() === log.wilayahParent.trim().toUpperCase()
+                        );
+                        const hargaFinal = log.hargaFinal ? cleanNumber(log.hargaFinal) : (masterItem ? cleanNumber(masterItem.price) : 0);
+                        
+                        let rowTotalNominal = 0;
+                        let bulanNominalHtml = "";
+
+                        for (let m = 1; m <= 12; m++) {
+                            let qtyBulan = parseInt(log.detailBulan['bulan_' + m]) || 0;
+                            let nominalBulan = qtyBulan * hargaFinal;
+                            rowTotalNominal += nominalBulan;
+                            
+                            subNominalBulan[m] += nominalBulan;
+                            wilNominalBulan[m] += nominalBulan;
+                            globalNominalBulan[m] += nominalBulan;
+                            
+                            bulanNominalHtml += `<td class="p-1 font-mono text-right text-gray-600 border-r border-gray-100">${nominalBulan > 0 ? formatRupiah(nominalBulan) : '-'}</td>`;
+                        }
+
+                        subTotalNominal += rowTotalNominal;
+                        wilTotalNominal += rowTotalNominal;
+                        globalTotalNominalAll += rowTotalNominal;
+
+                        const tr = document.createElement('tr');
+                        tr.className = "hover:bg-teal-50/30 transition-colors border-b border-gray-100 text-[10px]";
+                        tr.innerHTML = `
+                            <td class="px-2 py-2 font-mono text-gray-400 border-r border-gray-100 text-center">${log.wilayahParent}</td>
+                            <td class="px-2 py-2 text-left text-gray-500 border-r border-gray-100 max-w-[120px] truncate">${log.subEntity}</td>
+                            <td class="px-2 py-2 text-left text-gray-900 border-r border-gray-100 font-medium">${log.namaBarang}</td>
+                            <td class="px-2 py-2 text-right font-mono font-semibold text-teal-950 bg-teal-50/20 border-r border-gray-100">${formatRupiah(hargaFinal)}</td>
+                            ${bulanNominalHtml}
+                            <td class="px-2 py-2 text-right font-mono text-gray-600">${formatRupiah(rowTotalNominal)}</td>
+                        `;
+                        subEntityRowsBuffer.push(tr);
+                    });
+
+                    // Baris Sub-Total per Cabang / Sub-Entity (Unit)
+                    const trSubTotal = document.createElement('tr');
+                    trSubTotal.className = "bg-amber-50/70 text-amber-950 border-b border-amber-200/80 font-semibold text-[10px]";
+                    let subBulanHtml = "";
+                    for (let m = 1; m <= 12; m++) {
+                        subBulanHtml += `<td class="p-1 font-mono text-right border-r border-amber-200/60">${subNominalBulan[m] > 0 ? formatRupiah(subNominalBulan[m]) : '-'}</td>`;
+                    }
+                    trSubTotal.innerHTML = `
+                        <td class="px-2 py-1.5 font-mono text-center text-gray-400 border-r border-amber-100">—</td>
+                        <td class="px-2 py-1.5 text-amber-900 font-bold text-left" colspan="2">Sub-Total Unit: ${subEntityKey}</td>
+                        <td class="border-r border-amber-100 text-center text-gray-400">--</td>
+                        ${subBulanHtml}
+                        <td class="px-2 py-1.5 text-right font-mono font-bold text-amber-900 bg-amber-100/30">${formatRupiah(subTotalNominal)}</td>
+                    `;
+                    
+                    wilayahRowsBuffer.push(trSubTotal);
+                    wilayahRowsBuffer = wilayahRowsBuffer.concat(subEntityRowsBuffer);
+                });
+
+                // Baris Sub-Total Utama per Wilayah
+                const trWilayahTotal = document.createElement('tr');
+                trWilayahTotal.className = "bg-teal-700 font-bold text-white border-b border-teal-800 text-[10px]";
+                let wilBulanHtml = "";
+                for (let m = 1; m <= 12; m++) {
+                    wilBulanHtml += `<td class="p-1 font-mono text-right border-r border-teal-600/50">${wilNominalBulan[m] > 0 ? formatRupiah(wilNominalBulan[m]) : 'Rp0'}</td>`;
+                }
+                trWilayahTotal.innerHTML = `
+                    <td class="px-2 py-2 font-mono uppercase tracking-wider bg-teal-800 text-center" colspan="2">Sub Total Wilayah</td>
+                    <td class="px-2 py-2 font-bold text-teal-100 text-left">ALL ${wilayahKey}</td>
+                    <td class="border-r border-teal-600/40 text-center text-teal-200">--</td>
+                    ${wilBulanHtml}
+                    <td class="px-2 py-2 text-right font-mono font-bold text-amber-200 bg-teal-900/60">${formatRupiah(wilTotalNominal)}</td>
+                `;
+
+                tbody.appendChild(trWilayahTotal);
+                wilayahRowsBuffer.forEach(r => tbody.appendChild(r));
+            });
+
+            // Baris Akumulasi Akhir (Grand Total Semua Wilayah)
+            const trGrandTotalNominal = document.createElement('tr');
+            trGrandTotalNominal.className = "bg-amber-600 font-bold text-white text-right border-t-2 border-amber-700 sticky bottom-0 z-10 shadow-md text-[10px]";
+            let globalBulanNominalHtml = "";
+            for (let m = 1; m <= 12; m++) {
+                globalBulanNominalHtml += `<td class="p-2 font-mono text-right border-r border-amber-500 text-yellow-200">${globalNominalBulan[m] > 0 ? formatRupiah(globalNominalBulan[m]) : 'Rp0'}</td>`;
+            }
+            trGrandTotalNominal.innerHTML = `
+                <td colspan="3" class="px-3 py-2.5 text-left uppercase bg-amber-700 font-bold">🔥 GRAND TOTAL SEMUA WILAYAH</td>
+                <td class="border-r border-amber-500 text-center text-amber-100">--</td>
+                ${globalBulanNominalHtml}
+                <td class="px-2 py-2 font-black text-yellow-100 bg-amber-800 text-right font-mono text-xs">${formatRupiah(globalTotalNominalAll)}</td>
+            `;
+            tbody.appendChild(trGrandTotalNominal);
+        }
+
+        function downloadNominalExcel() {
+            const tableElement = document.getElementById('nominalBulanExcelTable');
+            if (!tableElement || globalLogBreakdown.length === 0) {
+                alert("⚠️ Tidak ada data nominal bulanan untuk diunduh!");
+                return;
+            }
+            const workbook = XLSX.utils.table_to_book(tableElement, { raw: true });
+            const tanggalSkrg = new Intl.DateTimeFormat('id-ID', { dateStyle: 'medium' }).format(new Date()).replace(/\s+/g, '_');
+            XLSX.writeFile(workbook, `Rincian_Nominal_Bulanan_RBB_${tanggalSkrg}.xlsx`);
         }
 
         function toggleSummaryRow(toggleId) {
@@ -1271,6 +1516,8 @@
                 renderMonitoringLog();
             } else if (currentActiveTab === "summary") {
                 renderSummaryBreakdown();
+            } else if (currentActiveTab === "nominalBulan") {
+                renderNominalBulanTable();
             }
         }
 
@@ -1791,17 +2038,13 @@
             XLSX.writeFile(workbook, namaFile);
         }
 
-        // =========================================================================
-        // TAMBAHAN BARU: FUNGSI UNTUK GENERATE & DOWNLOAD PDF TAB 3 + VERIFIKASI
-        // =========================================================================
         function downloadSummaryPDF() {
             const { jsPDF } = window.jspdf;
-            const doc = new jsPDF('l', 'mm', 'a4'); // Set landscape A4
+            const doc = new jsPDF('l', 'mm', 'a4'); 
 
             const activeWilayahFilter = document.getElementById('filterEntity').value;
             let infoVerifikatorText = "Status: Data belum dikonfirmasi/dikunci oleh Kantor Wilayah terkait.";
             
-            // Periksa berkas kuncian dari basis data log konfirmasi jika memfilter wilayah spesifik
             if (activeWilayahFilter !== "ALL") {
                 const matchKuncian = globalListKonfirmasi.find(k => k.wilayah.toString().trim().toUpperCase() === activeWilayahFilter.toUpperCase());
                 if (matchKuncian) {
@@ -1811,7 +2054,6 @@
                 infoVerifikatorText = "Status: Menampilkan Semua Wilayah (Untuk melihat tanda tangan verifikator, silakan pilih filter wilayah spesifik).";
             }
 
-            // 1. Desain Format Header Dokumen PDF
             doc.setFont("Helvetica", "bold");
             doc.setFontSize(14);
             doc.text("FORMULIR BREAKDOWN PERABOTAN NON OTOMASI - CAPEX 2026", 14, 15);
@@ -1822,10 +2064,9 @@
             doc.text(`Waktu Ekspor: ${new Date().toLocaleString('id-ID')} WIB`, 14, 26);
             
             doc.setLineWidth(0.4);
-            doc.setDrawColor(13, 148, 136); // Warna teal line
+            doc.setDrawColor(13, 148, 136); 
             doc.line(14, 29, 283, 29);
 
-            // 2. Ekstrak Data dari Tabel HTML Aplikasi ke format jsPDF AutoTable
             doc.autoTable({
                 html: '#summaryExcelTable',
                 startY: 33,
@@ -1833,35 +2074,37 @@
                 styles: { fontSize: 7, cellPadding: 1.5, halign: 'center', valign: 'middle' },
                 headStyles: { fillColor: [13, 54, 49], textColor: [255, 255, 255], fontStyle: 'bold' },
                 columnStyles: {
-                    0: { halign: 'center', fontStyle: 'bold' }, // Wilayah
-                    1: { halign: 'left' },                      // Sub Entity
-                    2: { halign: 'left' },                      // Nama Barang
-                    3: { halign: 'right' },                     // Pagu Maks
-                    4: { halign: 'right' },                     // Usulan Awal
-                    5: { halign: 'right', fontStyle: 'bold' },  // Revisi RBB
-                    18: { halign: 'right' },                    // Harga Final
-                    19: { halign: 'right', fontStyle: 'bold' }  // Total Realisasi
+                    0: { halign: 'center', fontStyle: 'bold' }, 
+                    1: { halign: 'left' },                      
+                    2: { halign: 'left' },                      
+                    3: { halign: 'right' },                     
+                    4: { halign: 'right' },                     
+                    5: { halign: 'right', fontStyle: 'bold' },  
+                    18: { halign: 'right' },                    
+                    19: { halign: 'right', fontStyle: 'bold' }  
                 },
                 didParseCell: function(data) {
-                    // Berikan highlight visual warna berbeda pada baris Sub-Total / Total Wilayah
                     const cellText = data.cell.text.join(' ');
                     if (cellText.includes('Sub Total Wilayah')) {
                         data.cell.styles.fillColor = [13, 148, 136];
                         data.cell.styles.textColor = [255, 255, 255];
                         data.cell.styles.fontStyle = 'bold';
                     } else if (cellText.includes('Sub-Total Unit:')) {
-                        data.cell.styles.fillColor = [254, 243, 199]; // Amber light row
+                        data.cell.styles.fillColor = [254, 243, 199]; 
                         data.cell.styles.textColor = [120, 53, 4];
+                        data.cell.styles.fontStyle = 'bold';
+                    } else if (cellText.includes('GRAND TOTAL ALL WILAYAH')) {
+                        data.cell.styles.fillColor = [217, 119, 6]; 
+                        data.cell.styles.textColor = [255, 255, 255];
                         data.cell.styles.fontStyle = 'bold';
                     }
                 }
             });
 
-            // 3. Desain Keterangan Validasi di bawah Tabel (Footer Penutup)
             const finalY = doc.lastAutoTable.finalY + 12;
             
-            doc.setFillColor(248, 250, 252); // Background abu-abu kotak info
-            doc.setDrawColor(203, 213, 225); // Border kotak info
+            doc.setFillColor(248, 250, 252); 
+            doc.setDrawColor(203, 213, 225); 
             doc.roundedRect(14, finalY, 269, 22, 2, 2, 'FD');
 
             doc.setFont("Helvetica", "bold");
@@ -1873,10 +2116,8 @@
             doc.setFontSize(8.5);
             doc.textColor = [51, 65, 85];
             
-            // Print teks multibaris otomatis agar tidak terpotong ke samping
             doc.text(infoVerifikatorText, 18, finalY + 12);
 
-            // Trigger Unduh File
             const stringTgl = new Intl.DateTimeFormat('id-ID', { dateStyle: 'medium' }).format(new Date()).replace(/\s+/g, '_');
             doc.save(`Summary_Breakdown_Perabotan_${stringTgl}.pdf`);
         }
