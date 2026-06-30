@@ -171,7 +171,7 @@
                         <th class="p-1 font-medium text-teal-950 w-8 bg-teal-50 border-r border-teal-100">Okt</th>
                         <th class="p-1 font-medium text-teal-950 w-8 bg-teal-50 border-r border-teal-100">Nov</th>
                         <th class="p-1 font-medium text-teal-950 w-8 bg-teal-50 border-r border-teal-200">Des</th>
-                        <th class="px-2 py-2 font-semibold text-teal-950 bg-amber-50 border-r border-amber-200 text-right w-24">Harga Satuan Final</th>
+                        <th class="px-2 py-2 font-semibold text-teal-950 bg-amber-50 border-r border-amber-200 text-right w-24">Estimasi Harga Satuan</th>
                         <th class="px-2 py-2 font-bold text-teal-950 bg-amber-100/50 border-r border-amber-200 text-right w-28">Rencana Realisasi</th>
                         <th class="px-2 py-2 font-semibold text-amber-950 w-24">Aksi</th>
                     </tr>
@@ -231,7 +231,7 @@
                         <th class="p-1 font-light bg-teal-800/50 border-r border-teal-700/40 w-7 text-center">Okt</th>
                         <th class="p-1 font-light bg-teal-800/50 border-r border-teal-700/40 w-7 text-center">Nov</th>
                         <th class="p-1 font-light bg-teal-800/50 border-teal-850 w-7 text-center">Des</th>
-                        <th class="px-2 py-2 text-center font-medium bg-amber-950 border-r border-amber-800 w-24 text-amber-200">Harga Satuan Final</th>
+                        <th class="px-2 py-2 text-center font-medium bg-amber-950 border-r border-amber-800 w-24 text-amber-200">Estimasi Harga Satuan</th>
                         <th class="px-2 py-2 text-center font-bold bg-amber-900 border-r border-amber-800 w-28 text-amber-100">Total Rencana Realisasi</th>
                     </tr>
                 </thead>
@@ -245,21 +245,26 @@
     </div>
 
     <div id="tabContentNominalBulan" class="bg-white p-5 rounded-xl shadow-md border border-teal-100 flex flex-col hidden">
-        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3 gap-2">
-            <h2 class="text-base font-bold text-teal-900">💰 5. Rincian Nominal Realisasi Bulanan (Kalkulasi Qty x Harga Satuan Final)</h2>
-            <div class="flex flex-wrap gap-2">
-                <button onclick="toggleAllRows('nominal', true)" class="px-2.5 py-1.5 bg-teal-100 hover:bg-teal-200 text-teal-800 font-semibold text-xs rounded-lg transition shadow-sm cursor-pointer">
-                    ➕ Buka Semua
-                </button>
-                <button onclick="toggleAllRows('nominal', false)" class="px-2.5 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold text-xs rounded-lg transition shadow-sm cursor-pointer">
-                    ➖ Tutup Semua
-                </button>
-
-                <button onclick="downloadNominalExcel()" class="px-3 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs rounded-lg transition shadow-sm flex items-center gap-1.5 cursor-pointer">
-                    📥 Export Excel Nominal (.xlsx)
-                </button>
-            </div>
+    <div class="flex flex-col lg:flex-row lg:items-center justify-between mb-3 gap-3 pb-2 border-b border-gray-100">
+        <h2 class="text-base font-bold text-teal-900 flex items-center gap-1.5 min-w-max">
+            💰 5. Rincian Nominal Realisasi Bulanan <span class="text-xs font-normal text-gray-500 hidden sm:inline">(Kalkulasi Qty x Estimasi Harga Satuan)</span>
+        </h2>
+        
+        <div class="flex flex-row flex-wrap sm:flex-nowrap items-center gap-1.5 w-full lg:w-auto justify-start lg:justify-end">
+            <button onclick="toggleAllRows('nominal', true)" class="px-2.5 py-1.5 bg-teal-100 hover:bg-teal-200 text-teal-800 font-semibold text-xs rounded-lg transition shadow-sm cursor-pointer whitespace-nowrap">
+                ➕ Buka Semua
+            </button>
+            <button onclick="toggleAllRows('nominal', false)" class="px-2.5 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold text-xs rounded-lg transition shadow-sm cursor-pointer whitespace-nowrap">
+                ➖ Tutup Semua
+            </button>
+            <button onclick="downloadNominalExcel()" class="px-3 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs rounded-lg transition shadow-sm flex items-center gap-1.5 cursor-pointer whitespace-nowrap">
+                📥 Excel (.xlsx)
+            </button>
+            <button onclick="downloadNominalPDF()" class="px-3 py-1.5 bg-rose-700 hover:bg-rose-800 text-white font-bold text-xs rounded-lg transition shadow-sm flex items-center gap-1.5 cursor-pointer whitespace-nowrap">
+                📄 PDF (.pdf)
+            </button>
         </div>
+    </div>
         
         <div class="overflow-x-auto overflow-y-auto max-h-[550px]">
             <table id="nominalBulanExcelTable" class="min-w-full divide-y divide-gray-200 text-[10px] text-center border-collapse">
@@ -268,7 +273,7 @@
                         <th class="px-2 py-3 border-r border-teal-700 w-12 bg-teal-600">Wil</th>
                         <th class="px-2 py-3 border-r border-teal-700 w-32 bg-teal-600">Sub-Entity / Unit</th>
                         <th class="px-2 py-3 border-r border-teal-700 text-left bg-teal-600">Nama Barang / Perabotan</th>
-                        <th class="px-2 py-3 border-r border-teal-700 w-24 bg-teal-600">Harga Final</th>
+                        <th class="px-2 py-3 border-r border-teal-700 w-24 bg-teal-600">Estimasi Harga Satuan</th>
                         
                         <th id="th_m1" class="p-1 border-r border-teal-700/50 col-m-1 hidden bg-teal-600/90 w-20">Jan</th>
                         <th id="th_m2" class="p-1 border-r border-teal-700/50 col-m-2 hidden bg-teal-600/90 w-20">Feb</th>
@@ -290,7 +295,7 @@
                         <th class="p-1 border-r border-teal-700/50 col-m-12 hidden bg-teal-600/90 w-20">Des</th>
                         <th id="th_q4" class="p-1 border-r border-teal-700 bg-teal-700 cursor-pointer hover:bg-teal-800 select-none transition-colors w-28" onclick="toggleQuarterColumns(4)">Kuartal 4 (Q4) <span id="icon_q4" class="text-[9px] font-mono">[+]</span></th>
                         
-                        <th class="px-2 py-3 font-bold bg-amber-900 text-amber-100 w-32">Total Realisasi</th>
+                        <th class="px-2 py-3 font-bold bg-amber-900 text-amber-100 w-32">Total Rencana Realisasi</th>
                     </tr>
                 </thead>
                 <tbody id="nominalBulanTableBody" class="divide-y divide-gray-200 text-gray-700">
@@ -1234,6 +1239,59 @@
             XLSX.writeFile(workbook, `Rincian_Nominal_Bulanan_RBB_${tanggalSkrg}.xlsx`);
         }
 
+function downloadNominalPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF('l', 'mm', 'a4'); // Format Landscape A4
+
+    const activeWilayahFilter = document.getElementById('filterEntity').value;
+
+    doc.setFont("Helvetica", "bold");
+    doc.setFontSize(14);
+    doc.text("RINCIAN NOMINAL REALISASI BULANAN PERABOTAN NON OTOMASI 2026", 14, 15);
+    
+    doc.setFont("Helvetica", "normal");
+    doc.setFontSize(10);
+    doc.text(`Kalkulasi (Qty x Estimasi Harga Satuan) — Wilayah Kerja: ${activeWilayahFilter}`, 14, 21);
+    doc.text(`Waktu Ekspor: ${new Date().toLocaleString('id-ID')} WIB`, 14, 26);
+    
+    doc.setLineWidth(0.4);
+    doc.setDrawColor(13, 148, 136); 
+    doc.line(14, 29, 283, 29);
+
+    doc.autoTable({
+        html: '#nominalBulanExcelTable',
+        startY: 33,
+        theme: 'grid',
+        styles: { fontSize: 6, cellPadding: 1, halign: 'center', valign: 'middle' },
+        headStyles: { fillColor: [13, 148, 136], textColor: [255, 255, 255], fontStyle: 'bold' },
+        columnStyles: {
+            1: { halign: 'left' },                      
+            2: { halign: 'left' },                      
+            3: { halign: 'right' }
+        },
+        didParseCell: function(data) {
+            const cellText = data.cell.text.join(' ');
+            // Pewarnaan baris otomatis mengikuti style hierarki aplikasi
+            if (cellText.includes('Sub Total Wilayah')) {
+                data.cell.styles.fillColor = [13, 148, 136];
+                data.cell.styles.textColor = [255, 255, 255];
+                data.cell.styles.fontStyle = 'bold';
+            } else if (cellText.includes('Sub-Total Unit:')) {
+                data.cell.styles.fillColor = [254, 243, 199]; 
+                data.cell.styles.textColor = [120, 53, 4];
+                data.cell.styles.fontStyle = 'bold';
+            } else if (cellText.includes('GRAND TOTAL ALL WILAYAH')) {
+                data.cell.styles.fillColor = [217, 119, 6]; 
+                data.cell.styles.textColor = [255, 255, 255];
+                data.cell.styles.fontStyle = 'bold';
+            }
+        }
+    });
+
+    const stringTgl = new Intl.DateTimeFormat('id-ID', { dateStyle: 'medium' }).format(new Date()).replace(/\s+/g, '_');
+    doc.save(`Rincian_Nominal_Bulanan_${stringTgl}.pdf`);
+}
+
 	// State global untuk mengontrol buka-tutup kolom kuartal (false = sembunyi bulan, true = tampilkan bulan)
         let quarterExpandState = { 1: false, 2: false, 3: false, 4: false };
 
@@ -1409,7 +1467,7 @@
             
             let headerHtml = `
                 <th class="p-3 text-left w-44 bg-gray-50">Sub Entity (Cabang)</th>
-                <th class="p-3 w-28 bg-gray-50 text-right">Harga Final (Rp)</th>
+                <th class="p-3 w-28 bg-gray-50 text-right">Estimasi Harga Satuan (Rp)</th>
                 <th class="p-3 w-16 bg-gray-50">Total Qty</th>`;
             
             bulanArr.forEach(b => {
@@ -1575,7 +1633,7 @@
             }
 
             if (totalENPInput > currentItemAlokasiENP) {
-                alert(`❌ GAGAL AJUKAN BREAKDOWN (OVERBUDGET)!\n\nTotal Rencana Realisasi sebesar ${formatRupiah(totalENPInput)} melebihi batas anggaran plafon wilayah sebesar ${formatRupiah(currentItemAlokasiENP)}.\n\nSilakan kurangi sebaran kuantiti bulanan atau sesuaikan harga final Anda.`);
+                alert(`❌ GAGAL AJUKAN BREAKDOWN (OVERBUDGET)!\n\nTotal Rencana Realisasi sebesar ${formatRupiah(totalENPInput)} melebihi batas anggaran plafon wilayah sebesar ${formatRupiah(currentItemAlokasiENP)}.\n\nSilakan kurangi sebaran kuantiti bulanan atau sesuaikan Estimasi harga satuan Anda.`);
                 return; 
             }
 
